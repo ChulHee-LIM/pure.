@@ -1,0 +1,126 @@
+<header> 
+  <div class="header_inner">
+  	<div class="row help-sentence">
+	    <h1 class="headline text-weight_300">도움말</h1>
+	    
+	</div>
+  </div>
+</header>
+
+<div class="help-container">
+  <div class="row">
+    <%if user_signed_in? && current_user.id == 1 %>
+  	<div class="col-md-4 col-md-offset-3 col-sm-4 col-sm-offset-3 col-xs-4 col-xs-offset-3">
+    	<% @helps.each do |h| %>
+    		<br>
+			<h2 id="t<%=h.id%>">
+		    	<%= h.title %>
+			</h2> 
+			<p><%= h.content %></p>
+		<% end %>
+    </div>
+	  <div class="col-md-2 col-sm-2 col-xs-2">
+		  <div id = "stickyheader">
+		    <h5>FAQ 목차</h5>
+		    <ul>
+		    	<% @helps.each do |h| %>
+		        <li>
+		        	<a class="anchorLink" href="#t<%=h.id%>"><%= h.title %></a>
+				    <a href="/home/management_delete_help/<%=h.id%>" data-confirm="Are you sure?"><i class="fa fa-trash-o"></i></a>
+			    </li>
+			    <% end %>
+			    <li>
+			    <button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target='#append'><i class="fa fa-wrench">_추가</i></button>
+			    </li>
+		    </ul>
+  		</div>
+	  </div>
+	  <%else%>
+  	<div class="col-md-4 col-md-offset-3 col-sm-4 col-sm-offset-3 col-xs-4 col-xs-offset-3">
+    	<% @helps.each do |h| %>
+    		<br>
+			<h2 id="t<%=h.id%>">
+		    	<%= h.title %>
+			</h2> 
+			<p><%= h.content %></p>
+		<% end %>
+    </div>
+	  <div class="col-md-2 col-sm-2 col-xs-2">
+		  <div id = "stickyheader">
+		    <h5>FAQ 목차</h5>
+		    <ul>
+		    	<% @helps.each do |h| %>
+		        <li>
+		        	<a class="anchorLink" href="#t<%=h.id%>"><%= h.title %></a>
+			    </li>
+			    <% end %>
+		    </ul>
+  		</div>
+	  </div>
+	  <%end%>
+  </div>
+</div>
+
+<!-- Modal Append -->
+<div id="append" class="modal fade" role="dialog" tabindex='-1'>
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Contact us.</h4>
+      </div>
+      <div class="modal-body">
+        <form action="/home/management_save_help" method="POST">
+            <label for="exampleInputText">Title</label>
+            <input type="text" class="form-control" name="title"><br>
+            <label for="exampleInputText">Contents</label>
+            <textarea class="form-control" name= "content" rows="15"></textarea>   
+            <button type="submit" class="btn btn-default">추가</button>        
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+jQuery.fn.anchorAnimate = function(settings) {
+     settings = jQuery.extend({
+        speed : 500
+    }, settings);    
+    return this.each(function(){
+        var caller = this
+        $(caller).click(function (event) {    
+            event.preventDefault()
+            var locationHref = window.location.href
+            var elementClick = $(caller).attr("href")
+            var destination = $(elementClick).offset().top-80;
+            $("html:not(:animated),body:not(:animated)").animate({ scrollTop: destination}, settings.speed, function() {
+                window.location.hash = elementClick
+            });
+              return false;
+        })
+    })	    
+}
+
+$(document).ready(function() {
+    $("a.anchorLink").anchorAnimate();
+    var stickyHeaderTop = $('#stickyheader').offset().top-80;
+
+    $(window).scroll(function(){
+            if( $(window).scrollTop() > stickyHeaderTop ) {
+                    $('#stickyheader').css({position: 'fixed', top: '47px'});
+                    // $('#stickyalias').css('display', 'block');
+            } else {
+                    $('#stickyheader').css({position: 'static', top: '48px'});
+                    // $('#stickyalias').css('display', 'none');
+            }
+    });
+});
+</script>

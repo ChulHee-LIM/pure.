@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PureBlack</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.5.9/slick.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.5.9/slick-theme.css"/>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <!--link rel="stylesheet" href="http://ironsummitmedia.github.io/startbootstrap-creative/css/creative.css"-->
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <!--script type="text/javascript" src="/assets/slick.min.js"></script-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script src="http://maps.googleapis.com/maps/api/js">
+  </script> 
+  <script src="https://npmcdn.com/masonry-layout@4.0/dist/masonry.pkgd.min.js"></script>
+  <script src="https://npmcdn.com/imagesloaded@4.1/imagesloaded.pkgd.min.js"></script>
+  <%= javascript_include_tag 'defaults', 'data-turbolinks-track' => true %>
+  <!--link rel="stylesheet" type="text/css" href="//app/assets/stylesheets/cafe_css.css"-->
+  
+
+  <%= csrf_meta_tags %>
+  <!--javascript for google map -->
+  
+  <!-- google map END -->
+  
+  <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
+</head>
+<body <% if params[:action] == 'index'%> style="overflow:hidden"<% end %> >
+  <% if params[:controller] == 'home' || params[:controller] == 'cafe' %>
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top topnav" <%unless params[:action]=='index'%>style=" background-color: #ffffff; border-bottom:1px solid #d9d9d9">
+      <% if current_user.tags[0].nil? %>  
+        <nav id="mainNav" class="navbar navbar-default navbar-fixed-top topnav" style="z-index:1; opacity: 0.2;">
+      <% end %>
+    <% end %>
+      <% if params[:action]=='index' %>
+        <div class="container-fluid">
+      <%else%> 
+        <div class="container-fluid" style="background-color: #ffffff">
+      <%end%>
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="row">
+        <div class="navbar-header col-lg-12" >
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+            <% if params[:action]=='index' %>
+              <% if Logo.count != 0 %>
+                <a class="navbar-brand " href="/"><img src="<%=Logo.last.index.url%>" style="width:104px;height:30px"></a>
+              <% end %>
+            <%else%> 
+              <% if Logo.count != 0 %>
+                <a class="navbar-brand " href="/"><img src="<%=Logo.last.other.url%>" style="width:104px;height:30px"></a>
+              <% end %>
+              <form action="/cafe/cafesearch" style="margin-top: 10px;display:inline-block" method="GET">
+                <div class="input-group">
+                  <span class="glyphicon glyphicon-search" style="color:#666666"aria-hidden="true"></span>
+                  &nbsp;
+                  <input type="text" class="" placeholder="오늘은 어디서 커피를?" value="<%=@navsearch%>" style="padding:5px; border-style:none;border-bottom:0.5px solid #666666" name="searchword">
+                  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+                </div>
+              </form>
+            <%end%>
+        <div class="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav" style="padding-right:50px">
+            <li>
+              <% if params[:action]=='index' && user_signed_in? %>
+                <a href="/home/newsfeed"><i class="fa fa-home"></i>&nbsp;Home</a>
+              <%elsif user_signed_in? %> 
+                <a href="/home/newsfeed" style="color:#666666"><i class="fa fa-home"></i>&nbsp;Home</a>
+              <%end%>
+            </li>
+            <li>
+              <% if params[:action]=='index' && user_signed_in? %>
+                <% if current_user.id == 1 %>
+                  <a href="/cafe/caferegister"><i class="fa fa-plus"></i>&nbsp;Register</a>
+                <%else%>
+                  <a href='#' data-toggle="modal" data-target="#cafe_apply"><i class="fa fa-plus"></i>&nbsp;Register</a>                    
+                <%end%>
+              <%elsif user_signed_in? %> 
+                <% if current_user.id == 1 %>
+                  <a href="/cafe/caferegister" style="color:#666666"><i class="fa fa-plus"></i>&nbsp;Register</a>
+                <%else%>
+                  <a href='#' data-toggle="modal" data-target="#cafe_apply" style="color:#666666"><i class="fa fa-plus"></i>&nbsp;Register</a>
+                <%end%>
+              <%end%>
+            </li>
+            <li>
+              <% if params[:action]=='index' %>
+                <a href="/home/help"><i class="fa fa-question-circle"></i>&nbsp;Help&nbsp;</a>
+              <%else%> 
+                <a href="/home/help" style="color:#666666"><i class="fa fa-question-circle"></i>&nbsp;Help&nbsp;</a>
+              <%end%>
+            </li>
+            <li>
+              <% if !user_signed_in? %>
+                <% if params[:action]=='index' %>
+                  <a href="/users/sign_in">LogIn</a>
+                <%else%> 
+                  <a href="/users/sign_in" style="color:#666666">LogIn</a>
+                <%end%>
+              <%end%>
+            </li>
+             <li id='user_image'>
+              <% if params[:action]=='index' %>                      
+                <% if user_signed_in?%>
+                  <div class="dropdown">
+                    <% if current_user.image? %>
+                      <a data-toggle="dropdown">
+                        <img src="<%=current_user.image.url%>" class="img-circle"  style="width:30px; height:30px; cursor:pointer; margin-top:30%; padding-top:0%;">
+                      </a>
+                    <% else %>
+                      <a data-toggle="dropdown">
+                        <img src="<%= image_url('profile_default.jpg') %>" class="img-circle" style="width:30px; height:30px; cursor:pointer; margin-top:30%; padding-top:0%;">
+                      </a>
+                    <% end %>
+                <% end %>
+              <% else %>
+                <% if user_signed_in?%>
+                  <div class="dropdown">
+                    <% if current_user.image? %>
+                      <a data-toggle="dropdown">
+                        <img src="<%=current_user.image.url%>" class="img-circle" style="width:30px;height:30px;margin-top:30%; padding-top:0%; cursor:pointer"> 
+                      </a>
+                    <% else %>
+                      <a data-toggle="dropdown">
+                        <img src="<%= image_url('profile_default.jpg') %>" class="img-circle" style="width:30px; height:30px; cursor:pointer; margin-top:30%; padding-top:0%;">
+                      </a>
+                    <% end %>
+                <% end %>
+              <% end %>
+                <ul class="dropdown-menu">
+                  <%if user_signed_in?%>
+                  <li class="dropdown-header">
+                    <span><%=current_user.name%></span>님 환영합니다.
+                  </li>
+                  <li>
+                    <a href="/home/profile/<%=current_user.user_hash%>" style="color:black">마이페이지</a>
+                  </li>
+                  <li>
+                    <% if current_user.id == 1 %>
+                        <a href="/home/management_cafe" style="color:black">관리</a>
+                    <% end %>                    
+                  </li>
+                  <li><a href="/users/sign_out" style="color:black">로그아웃</a></li>
+                  <% end %>
+                </ul>
+              </div>
+                                  
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- /.row -->
+        </div>
+      <!-- /.container-fluid -->
+      <div class="row">
+      <div class="col-sm-2"></div>
+      <div class="col-sm-8">
+      <% flash.each do |key, value| %>
+      <div class="alert alert-<%= key %> alert-dismissible">
+      <%= value %>
+      <button type="button" class="close" data-dismiss="alert" aria-label="close" style="font-size: 14px">
+      ×
+      </button>
+      </div>
+      <% end %>
+      </div>
+      </div>
+    </nav>
+  <% end %>
+<!-- navbar End -->
+<%= yield %>
+<!-- Footer -->
+<% if params[:controller] == 'home' || params[:controller] == 'cafe' %>
+  <% unless params[:action]=='index'%>
+    <footer style="padding-bottom:0px; padding-top: 0px; border-none; border-style:none;border-top:1px solid #d9d9d9" >
+      <br>
+      <br>
+      <div class="" style="background-color:white">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="large">하루의 시작을 알리는 커피, 당신의 스페셜티를 Pure와 함께 하세요</p>  
+            <ul class="list-inline">
+                <li><a href="/home/agreement">이용약관</a></li>
+                <li class="footer-menu-divider">|</li>
+                <li><a href="/home/privacy">개인정보 보호정책</a></li>
+                <li class="footer-menu-divider">|</li>
+                <li><a href="http://ifnill.com/">팀 소개</a></li>
+                <li class="footer-menu-divider">|</li>
+                <li><a href="/home/contact">Contact</a></li>
+            </ul>
+            <p class="copyright text-muted">Copyright &copy; ifnill 2016. All Rights Reserved</p> 
+          </div>
+        </div>
+        <br>
+      </div>
+    </footer>
+  <% end %>
+<%end%>
+<!-- Modal for cafe_apply -->
+<div id="cafe_apply" class="modal fade" role="dialog">
+  <div class="modal-dialog" style='left:25%;width:50%'>
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <center><h4 class="modal-title">카페등록 신청</h4></center>
+      </div>
+      <div class="modal-body">
+        <form action="/home/cafe_process" enctype="multipart/form-data" class="new_project_request text-left" method="post" style="padding-left: 10%;padding-right: 10%;">
+          <div class="row">
+            <p>등록에 필요한 정보를 입력 후 문의 하시면 PURE.에서 검토후, 연락드리겠습니다.</p>
+            <div class="row">
+              <div class="col-lg-6">
+                <p id="defalut_img">
+                <div class="img-rounded" id="link-upload" style="width:236px;height:157.5px;padding:0px;display:table; text-align:center;border:thin dashed #717171">
+                  <div style="cursor:pointer;display:table-cell; vertical-align:middle;">
+                    <br>
+                  <i id="uploadedimg" class="fa fa-picture-o" style="font-size:36px;color:#717171"></i>
+                  <p class="pic" style="padding-top:10px;color:#717171"><b>사진 추가</b></p>
+                  </div>
+                </div>
+                <input type="file" class="file_tag" name="thumbnail" onchange="readURL(this)"id ="thumbnail" required accept="image/*">
+              </div>
+              </p>
+              <div class="col-lg-6">
+                CAFE NAME : <input class="input-sm" type="text" style="border-style: none;border-bottom: thin solid #BABABA;" placeholder="카페 이름" name="cafename" id = "cafename" value="" required> <br><br>
+                PHONE :  <input class="input-sm" type="text" style="border-style: none;border-bottom: thin solid #BABABA;" name="cafecontact" id="cafecontact" placeholder="연락처" required><br><br>
+                EMAIL : <input class="input-sm" type="text" style="border-style: none;border-bottom: thin solid #BABABA;" name="cafeemail" id="cafeemail" placeholder="메일주소" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="each-form-single-line form-group form-group-sm">
+              <h4>카페 주소</h4>
+              <div class="postnumber input-group input-group-sm col-md-4 col-md-offset-0">
+              <input id="postcode" type="text" class="form-control" style="padding:5px; text-align:center" placeholder="우편번호" name="buyer_postcode" readonly="true" value="">
+              <span class="input-group-btn">
+              <a class="btn btn-danger" onclick="execDaumPostcode()" type="submit">검색</a>
+              </span>
+              </div>
+              <br>
+              <input class="form-control input-sm" name = "buyer_addr" type="text" id="buyer_addr" placeholder="주소" readonly="true" value="" ><br>
+              <input class="form-control input-sm" type="hidden" name = "address_jibun" id="jibunAddress" placeholder="지번주소" readonly="true" value="" required>
+              <input class="form-control input-sm" name = "address_detail" type="text" id="address_detail" placeholder="상세주소" value="">
+            </div>
+          </div>
+          <div class="row">
+             REQUEST : <textarea class="form-control" resize="none"rows="5" placeholder="" name="intro_detail" id ="intro_detail" required></textarea>
+          </div>
+          <input type="submit" style="display:none" id="for_submit_check">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <i class="fa fa-check submit_check" style="cursor:pointer;float:right;font-size:25px"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- cafe_apply END-->
+
+
+<% if params[:controller] == 'home' || params[:controller] == 'cafe' %>
+  <% unless params[:action]=='index'%>
+    <div class="modal-footer" style="border-top:none">
+    </div>
+  <% end %>
+<% end %>
+<div style="display: none" class="loading"></div>
+
+</body>
+</html>
+<script>  
+   $(document).ready(function(){       
+      var mq = window.matchMedia( "(min-width: 768px)" );
+      var scroll_start = 0;
+      var startchange = $('#startchange');
+      var offset = startchange.offset();
+      if (startchange.length){
+         if (mq.matches) { // window width is at least 500px
+            $(document).scroll(function() { 
+               scroll_start = $(this).scrollTop();
+               if(scroll_start > offset.top) {
+                  $(".navbar-default").css('background-color', '#333');
+               } else {                
+                  $('.navbar-default').css('background-color', 'transparent');                    
+               }
+            });   
+         }
+         else {// window width is less than 500px
+            $(".navbar-default").css('background-color', '#333');
+         }
+      }
+   });
+</script>
+<script type="text/javascript">
+//우편번호 찾기 버튼 클릭 시
+function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var fullAddr = ''; // 최종 주소 변수
+                var extraAddr = ''; // 조합형 주소 변수
+                var Jibun_address = '';
+
+                // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if(data.autoJibunAddress)
+                {
+                  JibunAddress = data.autoJibunAddress;
+                }
+                else{
+                  JibunAddress = data.jibunAddress;
+                }
+                
+
+                // 사용자가 선택한 주소가 도로명 타입일때 조합한다.
+                if(data.userSelectedType === 'R'){
+                    //법정동명이 있을 경우 추가한다.
+                    if(data.bname !== ''){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있을 경우 추가한다.
+                    if(data.buildingName !== ''){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+                    fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('postcode').value = data.zonecode; //5자리 새우편번호 사용
+                document.getElementById('buyer_addr').value = data.roadAddress;
+                document.getElementById('jibunAddress').value = JibunAddress;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById('address_detail').focus();
+            }
+        }).open();
+    }
+</script>
+
+<script type="text/javascript">
+$(function(){
+  $("#submit_button").click(function(e){
+     e.preventDefault();
+     $('.loading').show();
+     $(this).closest('form').submit();
+  });
+})  
+</script>
+<script type="text/javascript">
+// $(function(){
+//   var window_width = $(window).width()+15;
+//   // console.log(window_width);
+//   $(window).resize(function(){
+//   // console.log(window_width);
+//      window_width = $(window).width()+15;
+//   })
+//   if(window_width < 1200)
+//     {
+//       $('#user_image').hide();
+//     }
+//     else if(window_width > 1200){
+//       $('#user_image').show();
+//     }
+// })
+</script>
+<!-- Javascript for logo_image -->
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#link-upload').click(function(e){
+      e.preventDefault();
+      $('input[name=thumbnail]').click();
+    })
+    $('.submit_check').click(function(){
+      $('#for_submit_check').click();
+    })
+  })
+</script>
+<!-- logo_image END -->
+<script type="text/javascript">
+  function readURL(input){
+    if(input.files&&input.files[0]){
+      var reader = new FileReader();
+      reader.onload = function(e){
+          $('div[id=link-upload]').hide();
+          var imgs = document.querySelectorAll('img[id=uploadedimg]');
+          var defalut_img = document.querySelector('#defalut_img');
+          var img = document.createElement('img');
+          img.id='uploadedimg';
+          img.src=e.target.result;
+          img.className='profile-image';
+          img.style.cssText = 'width:236px;height:157.5px;padding:0px;display:table;';
+          if(imgs.length==0){
+            defalut_img.appendChild(img);
+          }
+          else{
+            defalut_img.removeChild(imgs[0]);
+            defalut_img.appendChild(img);
+          }
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
+<script type="text/javascript">
+$(function(){
+  setTimeout(function(){
+    $('.alert').remove();
+    $('.notice').remove();
+    $('.danger').remove();
+    $('.warning').remove();
+    $('.success').remove();
+  }, 2000);
+});
+</script>

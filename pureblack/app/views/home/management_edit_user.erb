@@ -1,0 +1,46 @@
+<div class="container bucket-container management">
+  <div  class="row">    
+    <div class="col-md-12" align="center">
+      <img src="<%= @user.image.url %>" class ="img-circle" style="margin:50px;width:200px;height:200px;border: 2px solid #f0f0f0;">
+    </div>
+    <div class="col-md-offset-3 col-md-6">
+      <form action="/home/management_save_user" method="POST">
+        <input type="hidden" name = "id" value="<%= @user.id %>" >    
+        <table style="width:100%">
+          <tr>
+            <th class="tabletitle">사용자이름</th>
+            <td><input class = "form-control" type="text" name = "username" value="<%= @user.name %>" readonly="true"></td>
+          </tr>
+          <tr>
+            <th class="tabletitle">이메일</th>
+            <td><input class = "form-control" type="text" name = "useremail" value="<%= @user.email %>" readonly="true"></td>
+          </tr>
+          <tr>
+            <th class="tabletitle">등록한 카페</th>
+            <td onclick="location.href='/home/management_register_cafe/<%=@user.id%>'"><%= @user.caves.count %></td>
+          </tr>
+          <tr>
+            <th class="tabletitle">방문한 카페</th>
+            <td onclick="location.href='/home/management_visit_cafe/<%=@user.id%>'"><%= @user.posts.where.not(:cafe_id=>0).select(:cafe_id).map(&:cafe_id).uniq.count %></td>
+          </tr>          
+        </table>
+        <br>
+        <div class="actions">
+          <input style="width:100%" class="btn btn-danger" type="submit" value="저장" id="submit_button">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div style="display: none" class="loading"></div>
+
+<script type="text/javascript">
+$(function(){
+  $("#submit_button").click(function(e){
+     e.preventDefault();
+     $('.loading').show();
+     $(this).closest('form').submit();
+  });
+})  
+</script>

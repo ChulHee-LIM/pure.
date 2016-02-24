@@ -1,0 +1,151 @@
+<div class="ModalManager Module" id="select_modal" >
+    <div class="Modal Module undefined male absoluteCenter show">
+        <div class="modalMask dark show"></div>
+        <div class="modalScroller">
+            <div class="modalContainer show">
+                <span class="positionModuleCaret"></span>
+                <div class="modalContent">
+                    <div class="modalModule">            
+                        <div class="Module NuxModalInterestPicker NuxModalStepBase brio inModal">
+                            <div class="contentWrapper">
+                                <div class="headerContent">
+                                    <h2 class="headerTitle">5개 이상 관심태그를 팔로우하세요.</h2>
+                                    <h3 class="headerSubTitle">이제 맞춤 홈피드가 만들어 집니다.</h3>
+                                </div>        
+                                <div class="searchWrapper">
+                                    <em class="searchIcon"></em>
+                                    <input class="Input Module search" placeholder="모든 태그 찾기" type="text" id="autocomplete">
+                                    <a class="clearSearch">
+                                        <em class></em>
+                                    </a>        
+                                </div>
+                                <div class="noResults hidden"></div>
+                                <div class="gridWrapper">
+                                    <div class="Grid Module">
+                                        <div class="GridItems Module centeredWithinWrapper fixedHeightLayout padItems">
+                                            <% @tags.each do |tag| %>                                            
+                                             <button class="btn btn-taglist" id ="<%= tag.id %>">#<%= tag.content %></button>   
+                                            <% end %>
+                                            
+                                            
+                                        </div>        
+                                    </div>   
+                                </div>
+                                <div class="footer">
+                                    <div class="buttonWrapper" id="complete_btn">
+                                        <button class="Button Module btn hasText  nuxModalPickerInterestButton primary rounded"
+                                        type="button" id="submit">
+                                            <span>완료</span>
+                                        </button>        
+                                    </div>
+                                    <div class="buttonWrapper" id="incomplete_btn">
+                                        <div class="Button Module btn hasText  nuxModalPickerInterestButton primary disabled" disabled="disabled">
+                                            <span id="how_many"></span>
+                                        </div>    
+
+                                    </div>    
+                                </div>   
+                            </div>   
+                        </div>       
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>               
+
+
+   
+<script>
+var count = 0;
+ $('.btn-taglist').click(function(){
+    
+    $(this).toggleClass('btn-selected');
+     
+
+     if ($(this).hasClass("btn-selected"))
+     {++count;
+     console.log(""+count);}   
+     else
+     {--count;
+     console.log(""+count);}   
+    if (count>=5)
+    {$('#complete_btn').show();
+    $('#incomplete_btn').show();}
+ else
+    {$('#complete_btn').hide();
+    $('#incomplete_btn').show();
+    $('#how_many').html(""+count+"개 선택하셨습니다.")
+            }    
+
+
+ })
+</script>
+
+
+
+
+<script>
+ var selected_ids = new Array();
+ $('#submit').click(function(){
+    $(".btn-selected").each(function(){
+    selected_ids.push($(this).attr('id'));
+    });
+  
+ $.ajax({
+       url: "/home/addtag",
+       method: "POST",
+       data: { "selected_ids" : selected_ids},
+        success: function(){
+        
+         }
+        
+     });
+ location.href ="/home/newsfeed"
+ // $('#select_modal').remove();
+ })
+
+</script>
+
+<script>
+
+
+// function addForm(){
+     
+//      var addedinput = document.createElement("button"); // 폼 생성
+//      addedinput.className = 'btn-taglist';
+//      addedinput.type ='text';
+//      addedinput.placeholder = '태그를 추가하세요!';
+//      addedinput.name = count;
+//      addedinput.id = "tag"+count; // input에 ID 부여 (삭제를 위해)
+//      addedinput.style.cssText = "margin-right:5px;border-style:none;border-bottom:0.5px solid #666666";
+p//      addedFormDiv.appendChild(addedinput); // 삽입할 DIV에 생성한 폼 삽입
+//      count++;
+//      document.baseForm.count.value=count;
+//      // 다음 페이지에 몇개의 폼을 넘기는지 전달하기 위해 히든 폼에 카운트 저장
+//    }
+$(function(){
+    $("#autocomplete").keypress(function(e){
+        if(e.which == 13){
+        $.ajax({
+           url: "/home/mtest",
+           data: {keyword: $("#autocomplete").val()},
+           success:function(json){ 
+                     var json_data = $.parseJSON(json);
+                     console.log(json_data);}
+            
+         });    
+
+
+
+        }    
+    })             
+            
+               
+
+
+
+    
+})
+
+</script>

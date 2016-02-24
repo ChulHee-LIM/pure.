@@ -1,0 +1,128 @@
+<div class="devise-container" id="gradient">
+   <div class="popupContainer" style="background-color: transparent;">
+      <!-- Register Form -->
+      <h1 href="/" style="color:white; font-weight:bold">PURE.</h1>
+      <br>
+      <p style="color:white; font-weight:bold">하루의 시작을 알리는 커피,</p>
+      <p style="color:white; font-weight:bold">당신의 스페셜티를 Pure와 함께 하세요</p>  
+      <br>
+      <hr>
+      <br>
+      <div class="user_register">
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+          <div class="each-form-single-line form-group form-group-lg" >
+            <%= f.email_field :email, autofocus: true, class: "input", placeholder: '이메일' %>
+          </div>
+
+          <div class="each-form-single-line form-group form-group-lg">
+              <%= f.text_field :name, autofocus: false, class: "input", placeholder: '사용자 이름' %>
+          </div>
+
+          <div class="each-form-single-line form-group form-group-lg">
+            <% if @minimum_password_length %>
+              <%= f.password_field :password, autocomplete: "off", class: "input", placeholder: '비밀번호 ( 최소 8자 이상 )' %>  
+            <% end %>
+          </div>
+
+          <div class="field">
+            <%= f.password_field :password_confirmation, autocomplete: "off", class: "input", placeholder: '비밀번호 확인' %>
+          </div>
+
+          <div class="field">
+            <%= f.hidden_field :user_hash, value:SecureRandom.hex(11),autocomplete: "off", class: "input"%>
+          </div>
+
+          <br><%= devise_error_messages! %><br>
+          <div class="actions">
+            <input class="btn btn-lg col-xs-12 col-sm-12 col-md-12 col-lg-12" type="submit" value="가입하기" style="border: 1px solid white; background-color:transparent; font-size: small; color: white; font-weight:bold; "id="submit_button">
+          </div>
+        <% end %> 
+      </div>
+      <a href="/users/sign_in">
+        <p style="color:white;">
+          또는
+        </p>
+      </a>
+      <div class = "each-form-single-line form-group form-group-lg">
+        <%- resource_class.omniauth_providers.each do |provider| %>
+          <br>
+            <%= image_tag 'facebook.png',:width => 18, :height => 18  %>
+            <%= link_to "#{OmniAuth::Utils.camelize(provider)}으로 가입하기",omniauth_authorize_path(resource_name, provider) ,class: "facebook" %>
+        <% end%>
+      </div>
+      <hr>
+      <a href="/users/sign_in">
+        <p style="color:white;font-weight:bold">
+          이미 계정이 있으신가요? 로그인
+        </p>
+      </a>
+      <br>
+  </div>
+</div>
+<script type="text/javascript">
+  var colors = new Array(
+    [45,175,230],
+    [255,0,255],
+    [62,35,255],
+    [255,35,98],
+    [60,255,60],
+    [255,128,0]);
+
+
+  var step = 0;
+  //color table indices for: 
+  // current color left
+  // next color left
+  // current color right
+  // next color right
+  var colorIndices = [0,1,2,3];
+
+  //transition speed
+  var gradientSpeed = 0.002;
+
+  function updateGradient()
+  {
+    
+    if ( $===undefined ) return;
+    
+  var c0_0 = colors[colorIndices[0]];
+  var c0_1 = colors[colorIndices[1]];
+  var c1_0 = colors[colorIndices[2]];
+  var c1_1 = colors[colorIndices[3]];
+
+  var istep = 1 - step;
+  var r1 = Math.round(istep * c0_0[0] + step * c0_1[0]);
+  var g1 = Math.round(istep * c0_0[1] + step * c0_1[1]);
+  var b1 = Math.round(istep * c0_0[2] + step * c0_1[2]);
+  var color1 = "rgb("+r1+","+g1+","+b1+")";
+
+  var r2 = Math.round(istep * c1_0[0] + step * c1_1[0]);
+  var g2 = Math.round(istep * c1_0[1] + step * c1_1[1]);
+  var b2 = Math.round(istep * c1_0[2] + step * c1_1[2]);
+  var color2 = "rgb("+r2+","+g2+","+b2+")";
+
+
+    document.getElementById("gradient").style.background="-webkit-gradient(linear, left top, left bottom, from("+color1+"), to("+color2+"))";
+    document.getElementById("gradient").style.background="-webkit-linear-gradient("+color1+", "+color2+")";
+    document.getElementById("gradient").style.background="-moz-linear-gradient(top, "+color1+", "+color2+")";
+    document.getElementById("gradient").style.background="-ms-linear-gradient("+color1+", "+color2+")";
+    document.getElementById("gradient").style.background="-o-linear-gradient("+color1+", "+color2+")";
+    document.getElementById("gradient").style.background="linear-gradient("+color1+", "+color2+")";
+    document.getElementById("gradient").style.filter="progid:DXImageTransform.Microsoft.Alpha(startColorstr='"+color1+"', endColorstr='"+color2+"')";
+    
+    step += gradientSpeed;
+    if ( step >= 1 )
+    {
+      step %= 1;
+      colorIndices[0] = colorIndices[1];
+      colorIndices[2] = colorIndices[3];
+      
+      //pick two new target color indices
+      //do not pick the same as the current one
+      colorIndices[1] = ( colorIndices[1] + Math.floor( 1 + Math.random() * (colors.length - 1))) % colors.length;
+      colorIndices[3] = ( colorIndices[3] + Math.floor( 1 + Math.random() * (colors.length - 1))) % colors.length;
+      
+    }
+  }
+  setInterval(updateGradient,10);
+</script>

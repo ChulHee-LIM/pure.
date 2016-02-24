@@ -1,0 +1,1185 @@
+<div class="container cafedetail-container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-12 cafeinfo-container">
+        <div class="row">
+          <div class="col-md-4" align="center">
+            <img class="cafeinfo-container-logoimage" src="<%= @cafe.thumnail.url %>">
+          </div>
+          <div class="col-md-4" align="left">
+            <div class="row cafeinfo-container-cafename">
+              <div class="col-md-12 cafedetail-cafename">
+                <span>
+                  <%= @cafe.name %>
+                </span>
+                <% if @cafe.user == current_user %>
+                <button type="button" class="btn btn-primary cafe_edit_btn" data-toggle="modal" data-target="#cafe_edit">카페 편집</button>
+                <% end %>
+              </div>
+            </div>
+            <div class="row cafeinfo-container-review">
+              <div class="col-md-12">
+                <span class="star-rating small_blue">
+                    <% 1.upto(5) do |i| %>
+                      <% if i == @cafe.avg.round(0) %>
+                        <i class="on"></i>
+                      <% else %>
+                        <i></i>
+                      <% end %>
+                    <% end %>
+                </span>
+                <span class="review-result"><%=@cafe.avg.round(1)%> 점 (<%=@cafe.posts.where.not(:user_id=>@cafe.user_id).count%> 명)</span>
+              </div>
+            </div>
+            <hr class="cafedetail-hr">        
+            <div class="row col-md-12 cafeinfo-container-icon">
+              <div>
+              <%if @cafe.facebook_address? %>  
+               <a href="http://<%= @cafe.facebook_address %>" target="_blank">
+                 <span class="fa-stack fa-lg">
+                   <i class="fa fa-facebook fa-stack-1.5x"></i>
+                 </span>
+               </a>
+              <%end%>
+              <%if @cafe.instagram_adderess? %>
+               <a href="http://<%= @cafe.instagram_adderess %>" target="_blank">
+               <span class="fa-stack fa-lg">
+                 <i class="fa fa-instagram fa-stack-1.5x" style="border-width: 1px;"></i>
+               </span>
+               </a>
+              <%end%>
+              <%if @cafe.webinfo_address? %>
+               <a  href="http://<%= @cafe.webinfo_address %>" target="_blank">
+               <span class="fa-stack fa-lg">
+                 <i class="fa fa-chrome fa-stack-1.5x"></i>
+               </span>
+               </a>
+              <%end%>
+              <%if @cafe.blog_address?%>
+               <a href="http://<%= @cafe.blog_address %>" target="_blank">
+               <span class="fa-stack fa-lg">
+                 <i class="fa fa-book fa-stack-1.5x"></i>
+               </span>
+               </a>
+              <%end%> 
+              </div>
+            </div>    
+                <!-- 아이콘 설정 끝-->
+            <div class="row cafeinfo-container-signature">
+              <div class="col-md-12">
+                <span><strong>시그니처 메뉴</strong></span>
+                <span><strong>&nbsp;|&nbsp;</strong></span>
+                <span><%= @cafe.signaturemenu %></span>
+              </div>
+            </div>
+            <div class="row cafeinfo-container-tag">
+              <div class ="col-md-12">
+                    <span class="tag">#<%= @cafe_tags[3].content %></span>
+                    <span class="tag">#<%= @cafe_tags[4].content %></span>
+                    <span class="tag">#<%= @cafe_tags[5].content %></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4" align="center">
+            <div class="thumbnail col-md-12 cafeinfo-container-map">
+              <div id="map_canvas"></div>
+              <div class="caption">
+                <p class="cafedetail-cafeaddr" align="left">
+                  <span><%= @cafe.address %></span><br>
+                  <span><%= @cafe.cafecontact %></span><br>
+                  <span><%= @cafe.user.email %></span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 cafeimage-container" align="center" style="border:none">
+        <div class="each-form-single-line form-group form-group-lg" align="left">
+          <span>카페 사진</span>
+          <span>카페를 이용한 사람들이 직접 올린 사진들입니다.</span>
+        </div>
+        <div class="row cafeimage-container-image">
+          <center>
+            <div class="col-lg-4 col-md-6 col-sm-4 col-xs-4 img-rounded" style="width:262.5px;height:157.5px;overflow:hidden;margin-bottom:10px;padding:0px;margin-left:10px;margin-right:10px; display:table; border:thin dashed #717171">
+              <div style="cursor:pointer;display:table-cell; vertical-align:middle;"data-toggle="modal" data-target="#addImage">
+                <br>
+                  <i class="fa fa-camera" style="font-size:36px;color:#717171"></i><br>  
+                  <p style="padding-top:10px;color:#717171"><b>사진 추가</b></p>
+              </div>
+            </div>
+            <% @cafe.posts.limit(3).each do |c| %>
+              <div id="div_commentimage" class="col-lg-4 col-md-6 col-sm-4 col-xs-4 img-rounded" style="width:262.5px;height:157.5px;overflow:hidden;margin-bottom:10px;padding:0px;margin-left:10px;margin-right:10px;">
+                <a href="#" class="imagepopup" >
+                <input style="width:262.5px;"type="image" class="img_commentimage" src="<%= c.image.thumb.url %>"value="<%=c.id%>"data-toggle="modal" data-target="#myModal">
+                </a>
+              </div>
+            <% end %>
+          </center>
+        </div>
+        <br>
+      </div>
+      <hr class="cafedetail-hr">
+      <div class="col-md-12 cafeintro-container" align="center">
+        <div class="cafeintro-introduction each-form-single-line form-group form-group-lg" align="left">
+          <span>카페 소개</span>
+        </div>
+        <br>
+        <div class ="row">
+          <div class="col-md-6" style="padding-right: 13%;">
+            <div class="row">
+              <img class="cafeintro-mainimage img-rounded" src="<%= @cafe.image.thumb2.url %>">
+            </div>
+            <br>
+            <div class="row">
+              <p class="cafeintro-mainimage" style="text-align:left;height:auto">영업 시간:&nbsp; <%=@cafe.business_hour%></p>
+            </div>
+            <div class="row">
+              <p class="cafeintro-mainimage" style="text-align:left;height:auto"><%= @cafe.introduction %></p>
+            </div>
+          </div>
+          <div class="col-md-6" align="center">
+            <div class="row">
+              <table>
+                <th class="premises_title">보유장비</th>
+              </table>
+            </div>
+            <div class="row">
+              <table class="premises_content">
+                <tr>
+                  <td style="text-align:left">Machine</td>
+                  <br>
+                  <%if @cafe.machine?%>
+                    <td style="text-align:left"><%=@cafe.machine%></td>
+                  <%end%>
+                </tr>
+                <tr>
+                  <td style="text-align:left">Grinder</td>
+                  <br>
+                  <%if @cafe.grinder?%>
+                    <td style="text-align:left"><%=@cafe.grinder%></td>
+                  <%end%>
+                </tr>
+                <tr>
+                  <td style="text-align:left">Beans</td>
+                  <br>
+                  <%if @cafe.bean?%>
+                    <td style="text-align:left"><%=@cafe.bean%></td>
+                  <%end%>
+                </tr>
+                <tr>
+                  <td style="text-align:left">Brewing method</td>
+                  <br>
+                  <%if @cafe.brewing_method?%>
+                    <td style="text-align:left"><%=@cafe.brewing_method%></td>
+                  <%end%>
+                </tr>
+              </table>
+            </div>
+            <br>
+            <br>
+            <div class="row">
+              <table>
+                <th class="premises_title">시설</th>
+              </table>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div class="row">
+              <table class="premises_content">
+                <tr>
+                  <% if @cafe.meal_available == false %>
+                    <td style="text-align:left"><label for="chk1" class="cafesearch_checkbox"><span class="glyphicon glyphicon-cutlery"></span>&nbsp;식사가능&nbsp;<input type="checkbox" style="float:right" id="chk1" disabled></label></td>
+                  <% else %>
+                    <td style="text-align:left;"><label for="chk1" class="cafesearch_checkbox"><span class="glyphicon glyphicon-cutlery"></span>&nbsp;식사가능&nbsp;<input type="checkbox" style="float:right" id="chk1" checked="true" disabled></label></td>
+                  <% end %>
+                  <% if @cafe.parking == false %>
+                    <td style="text-align:left"><label for="chk2" class="cafesearch_checkbox"><i class="fa fa-car"></i>&nbsp;주차가능&nbsp;<input type="checkbox" style="float:right" id="chk2" disabled></label></td>
+                  <% else %>
+                    <td style="text-align:left"><label for="chk2" class="cafesearch_checkbox"><i class="fa fa-car"></i>&nbsp;주차가능&nbsp;<input type="checkbox" style="float:right" id="chk2" checked="true" disabled></label></td>
+                  <% end %>
+                </tr>
+                <tr>
+                  <% if @cafe.wifi == false %>
+                    <td style="text-align:left"><label for="chk3" class="cafesearch_checkbox"><i class="fa fa-wifi"></i>&nbsp;무선인터넷&nbsp;<input type="checkbox" style="float:right" id="chk3" disabled></label></td>
+                  <% else %>
+                    <td style="text-align:left"><label for="chk3" class="cafesearch_checkbox"><i class="fa fa-wifi"></i>&nbsp;무선인터넷&nbsp;<input type="checkbox" style="float:right" id="chk3" checked="true" disabled></label></td>
+                  <% end %>
+                  <% if @cafe.sidemenu == false %>
+                    <td style="text-align:left"><label for="chk4" class="cafesearch_checkbox"><span class="glyphicon glyphicon-apple"></span>&nbsp;사이드메뉴&nbsp;<input type="checkbox" style="float:right" id="chk4" disabled></label></td>
+                  <% else %>
+                    <td style="text-align:left"><label for="chk4" class="cafesearch_checkbox"><span class="glyphicon glyphicon-apple"></span>&nbsp;사이드메뉴&nbsp;s<input type="checkbox" style="float:right" id="chk4" checked="true" disabled></label></td>
+                  <% end %>
+                </tr>
+                <tr>
+                  <% if @cafe.animal_available == false %>
+                    <td style="text-align:left"><label for="chk5" class="cafesearch_checkbox"><i class="fa fa-paw"></i>&nbsp;반려견 출입가능&nbsp;<input type="checkbox" style="float:right" id="chk5" disabled></label></td>
+                  <% else %>
+                    <td style="text-align:left"><label for="chk5" class="cafesearch_checkbox"><i class="fa fa-paw"></i>&nbsp;반려견 출입가능&nbsp;<input type="checkbox" style="float:right" id="chk5" checked="true" disabled></label></td>
+                  <% end %>
+                  <% if @cafe.in_house_roasting == false %>
+                    <td style="text-align:left"><label for="chk6" class="cafesearch_checkbox"><i class="fa fa-coffee"></i>&nbsp;In house roasting&nbsp;<input type="checkbox" style="float:right" id="chk6" disabled></label></td>
+                  <% else %>
+                    <td style="text-align:left"><label for="chk6" class="cafesearch_checkbox"><i class="fa fa-coffee"></i>&nbsp;In house roasting&nbsp;<input type="checkbox" style="float:right" id="chk6" checked="true" disabled></label></td>
+                  <% end %>
+                </tr>
+                <tr>
+                  <% if @cafe.smoke == false %>
+                    <td style="text-align:left"><label for="chk7" class="cafesearch_checkbox"><span class="glyphicon glyphicon-sunglasses"></span>&nbsp;흡연실 유무&nbsp;<input type="checkbox" style="float:right" id="chk7" disabled></label></td>
+                  <% else %>
+                    <td style="text-align:left"><label for="chk7" class="cafesearch_checkbox"><span class="glyphicon glyphicon-sunglasses"></span>&nbsp;흡연실 유무&nbsp;<input type="checkbox" style="float:right" id="chk7" checked="true" disabled></label></td>
+                  <% end %>
+                  <% if @cafe.today_business_check == false %>
+                    <td style="text-align:left"><label for="chk8" class="cafesearch_checkbox"><i class="fa fa-check-square"></i>&nbsp;영업여부&nbsp;<input type="checkbox" style="float:right" id="chk8" disabled></label></td>
+                  <% else %>
+                    <td style="text-align:left"><label for="chk8" class="cafesearch_checkbox"><i class="fa fa-check-square"></i>&nbsp;영업여부&nbsp;<input type="checkbox" style="float:right" id="chk8" checked="true" disabled></label></td>
+                  <% end %>
+                </tr>            
+              </table>
+            </div>
+            <br><br>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+</div>
+
+<input type = "hidden" id="lat" value="<%=@cafe.latitude %>">
+<input type = "hidden" id="lng" value="<%=@cafe.longitude %>">
+<!-- image slider layer popup start -->
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog" name="modal_window">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+<!-- Modal content-->
+<% @cafe.posts.each do |c| %>
+    <div class="col-md-12" id="window" data-value="<%=c.id%>" style="display: none;">
+      <div class="row">
+        <div id="imagewindow">
+          <div class="row">
+            <div class="leftbutton-container col-md-2 col-sm-2 col-xs-3">
+              <div class="leftbutton" data-slide="prev" data-value="<%=c.id%>">
+                <span>&lsaquo;</span>
+              </div>
+            </div>
+            <div class="modalimage-container col-md-8 col-sm-8 col-xs-6" align="center">
+              <div>
+                  <img class="imagecontainer slide-image img-rounded" id ="showImage" src="<%=c.image.thumb.url%>" alt="">
+              </div>
+            </div>
+            <div class="rightbutton-container col-md-2 col-sm-2 col-xs-3">
+              <div class="rightbutton" data-slide="next"data-value="<%=c.id%>">
+                <span>&rsaquo;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="contentwindow">
+          <div class ="row">
+            <div class="post_userinfo-container">
+              <div>
+                <% if User.where(:id=>c.user_id).take.image? %>
+                  <img src='<%=User.where(:id=>c.user_id).take.image.url %>' class="img-circle">
+                <% else %>
+                 <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                <% end %>
+              </div>
+              <a href="/home/profile/<%=c.user.user_hash%>" style="decoration:none;color:black;"><span class="postinfo-username"><%=User.where(:id=>c.user_id).take.name%></span></a>
+              <i id = "like_button_<%= c.id %>" class="fa fa-heart-o"></i>            
+              <a id = "like_list_button_<%= c.id %>" style="cursor: pointer" data-toggle="modal" data-target="#like_list">좋아요 <span id="like_count_<%= c.id %>" ><%= c.likes.count %></span>개</a>
+              <% unless current_user.nil? %>
+                <% if current_user.id == c.user_id || current_user.id ==1 %>
+                  <a class="postinfo-delete" href="/cafe/delete_post/<%=c.id%>"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="해당 게시물을 삭제하시면 관련된 모든 댓글이 삭제됩니다."></span></a>
+                <% else %>                  
+                  <button type="submit" id="unfollow_<%=c.id%>" class="btn btn-default" style="color:#fff;border-color:#00acf1;background-color:#00acf1;float:right">팔로잉</button>
+                  <button type="submit" id="follow_<%=c.id%>"class="btn btn-default" style="border-color:#00acf1; color:#00acf1;float:right">팔로우</button>                  
+                <% end %>
+              <% end %>
+              <br>
+              <% unless current_user.nil?%>
+                <% if c.user_id != @cafe.user_id %>
+                  <span class="star-rating small">
+                    <% 1.upto(5) do |i| %>
+                      <% if i == c.score %>
+                        <i class="on"></i>
+                      <% else %>
+                        <i></i>
+                      <% end %>
+                    <% end %>
+                  </span>
+                <% end %>
+              <% else %>
+                <% if c.user_id !=@cafe.user_id %>
+                  <span class="star-rating small">
+                    <% 1.upto(5) do |i| %>
+                      <% if i == c.score %>
+                        <i class="on"></i>
+                      <% else %>
+                        <i></i>
+                      <% end %>
+                    <% end %>
+                  </span>
+                <% end %>   
+              <% end %>
+            </div>
+          </div>
+          <hr class="featurette-divider post_divider">
+          <div class="row post_reply_container">
+            <div id="reply_div" data-value="<%=c.id%>">
+              <div class="row" id="replyblock" data-value="<%=c.id%>">
+                <div class="col-md-3 col-sm-3 col-xs-3" id="replyimage">
+                  <% if User.where(:id=>c.user_id).take.image? %>
+                    <img src='<%=User.where(:id=>c.user_id).take.image.url %>' class="img-circle">
+                  <% else %>
+                   <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                  <% end %>
+                </div>
+                <div class="col-md-9 col-sm-9 col-xs-9" id="reply_contents" data-value="<%=c.id%>">
+                  <div class="row">
+                    <div id="reply_username_content_time1">
+                      <a id="replyname" href="/home/profile/<%=c.user.user_hash%>" style="font-weight:bold"><%=User.where(:id=>c.user_id).take.name%></a>
+                      <span id="replycontent"><%= c.content %></span>
+                      <% c.tags.each do |tag| %>
+                        <span class="post_tag_content">
+                          #<%=tag.content%>
+                        </span>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div id="reply_username_content_time2">
+                      <span><b><%=c.address%></b>에서</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                      <span><%=c.writtentime.strftime('%Y-%m-%d %H:%M:%S')%></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% c.replies.each do |r| %>
+                <div class="row" id="replyblock" data-value="<%=r.id%>">
+                  <div class="col-md-3 col-sm-3 col-xs-3" id="replyimage">
+                    <% if r.user.image? %>
+                      <img src='<%=r.user.image.url%>' class="img-circle">
+                    <% else %>
+                     <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                    <% end %>
+                  </div>
+                  <div class="col-md-9 col-sm-9 col-xs-9" id="reply_contents" data-value="<%=r.id%>">
+                    <div class="row">
+                      <div id="reply_username_content_time1">
+                        <a id="replyname" href="/home/profile/<%=r.user.user_hash%>"><%=r.user.name%></a>
+                        <span id="replycontent"><%= r.content %></span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div id="reply_username_content_time2">
+                        <span><%=r.writtentime.strftime('%Y-%m-%d %H:%M:%S')%></span>
+                        <% unless current_user.nil? %>
+                          <% if current_user.id == r.user_id %>
+                            <a onclick="edit_reply(<%=r.id%>)" data-value="<%=r.id%>" class="reply_edit">수정</a>
+                            <a onclick="del_reply(<%=r.id%>)" data-value="<%=r.id%>" class="reply_delete">삭제</a>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <hr class="featurette-divider post_divider">
+          <div class="row post_writereply_container">
+            <div>
+              <div class="post_writereply_userimage col-md-2 col-sm-2 col-xs-2">
+              <% unless current_user.nil? %>
+                <% if current_user.image? %>
+                  <img src='<%=current_user.image.url%>' class="img-circle">
+                <% else %>
+                  <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                <% end %>
+              <% else %>
+                <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+              <% end %>
+              </div>
+              <div class="post_writereply_content col-md-10 col-sm-10 col-xs-10">
+                <textarea class="textarea-box img-rounded reply" cols="100" rows="1" placeholder="Write your reply" data-value="<%=c.id%>"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+<!-- image slider layer popup end -->
+
+<!-- Modal for Cafe edit -->
+<div class="modal fade" id="cafe_edit" role="dialog" tabindex="-1">
+  <div class="modal-dialog" style='left:25%;width:50%'>
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">카페 편집 / <a href="/cafe/cafedelete/<%=@cafe.id%>">카페 삭제</a></h4>
+      </div>
+      <div class="modal-body">
+        <form accept-charset="UTF-8" action="/cafe/cafe_edit/<%=@cafe.id%>" enctype="multipart/form-data" class="new_project_request text-left" id="new_project_request"method="post">
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>카페 이름</h3>
+                <input class="form-control input-lg" type="text" value="<%=@cafe.name%>" name="name" id="name" readonly="true"><br>
+            </div>
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>카페 주소</h3>
+                <input class="form-control input-lg" type="text" value="<%=@cafe.address%>" name="name" id="name" readonly="true"><br>
+            </div>
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>로고 사진</h3>
+              <span>(기존 이미지 사용을 원할 경우, 미기입)</span>
+                <input type="file" name="thumbnail" id ="thumbnail"accept="image/*">
+            </div>
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>대표 사진</h3>
+              <span>(기존 이미지 사용을 원할 경우, 미기입)</span>
+                <input type="file" name="cafeimage" id="cafeimage" accept="image/*">
+            </div>
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>연락처</h3>
+                <input class="form-control input-lg" type="text" name="cafecontact" id="cafecontact" value="<%=@cafe.cafecontact%>" required>
+            </div>
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>카페 소개</h3>
+                  <textarea class="form-control" rows="11" name="intro_detail" id ="intro_detail" required><%=@cafe.introduction%></textarea>
+            </div>
+            <div class="each-form-single-line form-group form-group-lg ">
+              <h3>소셜 미디어</h3>
+              <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon"><i class="fa fa-facebook-square fa-2x"></i></span>
+                <input class="form-control input-lg" type="text" placeholder="페이스북 주소" name="facebook_address" id="facebook_address" value="<%=@cafe.facebook_address%>">
+              </div>
+              <br>
+              <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon"><i class="fa fa-instagram fa-2x"></i></span>
+                <input class="form-control " type="text" placeholder="인스타그램 주소" name="instagram_adderess" id="instagram_adderess" value="<%=@cafe.instagram_adderess%>">  
+              </div> 
+              <br>
+              <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon"><i class="fa fa-chrome fa-2x"  style="width:24px; height:29px"></i></span>
+                <input class="form-control input-lg" type="text" placeholder="홈페이지 주소" name="webinfo_adderess" id="webinfo_adderess" value="<%=@cafe.webinfo_address%>">
+              </div>
+              <br>
+              <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon"><i class="fa fa-book fa-2x"  style="width:24px; height:29px"></i></span>
+                <input class="form-control input-lg" type="text" placeholder="블로그 주소" name="blog_adderess" id="blog_adderess" value="<%=@cafe.blog_address%>">
+              </div>
+              <br>
+            </div> 
+            <!-- 소셜정보 끝 -->
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>대표 메뉴</h3>
+                <input class="form-control input-lg" type="text" value="<%=@cafe.signaturemenu%>" name="signaturemenu" id="signaturemenu" required><br>
+            </div>
+        
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>보유 장비</h3>
+              <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon">machine</span>
+                <input class="form-control input-lg" type="text" name="machine" placeholder="machine" id="machine" value="<%=@cafe.machine%>">
+              </div>
+              <br>
+              <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon">grinder</span>
+                <input class="form-control input-lg" type="text" placeholder="grinder" name="grinder" id="grinder" value="<%=@cafe.grinder%>">
+              </div>
+              <br>
+              <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon">beans</span>
+                <input class="form-control input-lg" type="text" placeholder="beans" name="beans" id="beans" value="<%=@cafe.bean%>">
+              </div>
+              <br>
+              <div class="input-group margin-bottom-sm">
+                <span class="input-group-addon">brewing method</span>
+                <input class="form-control input-lg" type="text" placeholder="brewing method" name="brewing_method" id="brewing_method" value="<%=@cafe.brewing_method%>">
+              </div>
+              <br>
+            </div>
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>영업 시간</h3>
+              <div class="row">
+                <div class="col-md-4 col-sm-5 col-xs-12">
+                  <input class="form-control input-lg" name="opening_time" type="time" value="<%=@cafe.business_hour%>">
+                </div>
+                <div class="col-md-1 col-sm-1 col-xs-12" style="text-align:center;display:table">
+                  <h4 style="width:100%; height:46px; margin:0px; vertical-align:middle; display:table-cell;">~</h4>
+                </div>
+                <div class="col-md-4 col-sm-5 col-xs-12">
+                  <input class="form-control input-lg" name="closing_time" type="time">
+                </div>
+              </div>
+            </div>
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>시설</h3>
+              <% if @cafe.meal_available == true %>
+                <input type="checkbox" id="meal_available"name="meal_available" checked="checked" value="checked">
+              <% else %>
+                <input type="checkbox" id="meal_available"name="meal_available" value="checked">
+              <% end %>
+              &nbsp;식사 가능&nbsp;
+              <% if @cafe.parking == true %>
+                <input type="checkbox" id="parking" name="parking" checked="checked" value="checked">
+              <% else %>
+                <input type="checkbox" id="parking" name="parking" value="checked">
+              <% end %>
+              &nbsp;주차 가능&nbsp;
+              <% if @cafe.wifi == true %>
+                <input type="checkbox" id="wifi" name="wifi" checked="checked" value="checked">
+              <% else %>
+                <input type="checkbox" id="wifi" name="wifi" value="checked">
+              <% end %>
+              &nbsp;와이파이 제공&nbsp;
+              <% if @cafe.sidemenu == true %>
+                <input type="checkbox" id="sidemenu" name="sidemenu" checked="checked" value="checked">
+              <% else %>
+                <input type="checkbox" id="sidemenu" name="sidemenu" value="checked">
+              <% end %>
+              &nbsp;SideMenu&nbsp; <br>
+              <% if @cafe.animal_available == true %>
+                <input type="checkbox" id="animal_available" name="animal_available" checked="checked" value="checked">
+              <% else %>
+                <input type="checkbox" id="animal_available" name="animal_available" value="checked">
+              <% end %>
+              &nbsp;애완 동물 출입 가능&nbsp;
+              <% if @cafe.in_house_roasting == true %>
+                <input type="checkbox" id="in_house_roasting" name="in_house_roasting" checked="checked" value="checked">
+              <% else %>
+                <input type="checkbox" id="in_house_roasting" name="in_house_roasting" value="checked">
+              <% end %>
+              &nbsp;in house roasting&nbsp;
+              <% if @cafe.smoke == true %>
+                <input type="checkbox" id="smoke" name="smoke" checked="checked" value="checked">
+              <% else %>
+                <input type="checkbox" id="smoke" name="smoke" value="checked">
+              <% end %>
+                &nbsp;흡연 공간 보유&nbsp;<br>
+              <% if @cafe.today_business_check == true %>
+                <input type="checkbox" id="today_business_check" name="today_business_check" value="checked" checked="checked">
+              <% else %>
+                <input type="checkbox" id="today_business_check" name="today_business_check" value="checked">
+              <% end %>
+              &nbsp;영업여부&nbsp;(&nbsp;당일 영업 여부를 선택하십시오. 선택을 해제할 경우 영업휴일로 전환됩니다.&nbsp;)
+            </div>
+            <div class="each-form-single-line form-group form-group-lg">
+              <h3>카페 태그</h3>
+              <span>태그를 달아주세요 (ex 라떼, 에스프레소, 케익)</span>
+                <input class="form-control input-lg" type="text" placeholder="tag1" name="tag1" value="<%=@cafe_tags[3].content%>" required><br>
+                <input type="hidden" value="<%=@cafe_tags[3].id%>" name="tag1_id">
+                <input class="form-control input-lg" type="text" placeholder="tag2" name="tag2" value="<%=@cafe_tags[4].content%>" required><br>
+                <input type="hidden" value="<%=@cafe_tags[4].id%>" name="tag2_id">
+                <input class="form-control input-lg" type="text" placeholder="tag3" name="tag3" value="<%=@cafe_tags[5].content%>" required><br>
+                <input type="hidden" value="<%=@cafe_tags[5].id%>" name="tag3_id">
+            </div>          
+            <div>
+              <input class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12 col-lg-12" type="submit" value="수정 완료">
+            </div>
+        </form> 
+      </div>
+      <div class="modal-footer" style="border-top:none">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal for Cafe edit END -->
+
+<!-- Modal for Add image start -->
+<% unless current_user.nil? %>
+<div id="addImage" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog modal_addimage">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">사진 추가</h4>
+      </div>
+      <div class="modal-body">
+        <form accept-charset="UTF-8" action="/cafe/add_post" enctype="multipart/form-data" class="new_project_request text-left" name="baseForm" method="post">
+            <input type="hidden" name="count" value="1">
+            <input type="hidden" name="cafehash" value="<%=@cafe.cafehash%>">
+            <div class="each-form-single-line form-group form-group-lg" style="margin-bottom:5px">
+              <div style="margin-bottom:5px">
+                <i class="fa fa-camera" title="사진" id="photo" style="font-size:25px;cursor:pointer;"></i>
+                <span style="margin-left:5px;margin-right:5px">사진</span><br>
+                <textarea readonly style="background-color: #eee;"class="textarea-box img-rounded" cols="100" rows="1" id="filepath" required placeholder="사진을 추가해주세요"></textarea>
+                <input required type="file" name="postimage" id="postimage" accept="image/*" style="display:none" onchange="document.getElementById('filepath').value=this.value;" required>
+              </div>
+              <div>
+                <i class="fa fa-pencil" title="리뷰"id="review" style="font-size:25px;"></i>
+                <span style="margin-left:10px;">리뷰</span><br>
+                <% unless current_user.nil? %>
+                <% if current_user.id != @cafe.user.id %>
+                <span class="star-rating small">
+                  <input style="overflow:hidden" required id = "rating" type="radio" name="rating" value="1"><i></i>
+                  <input style="overflow:hidden" required id = "rating" type="radio" name="rating" value="2"><i></i>
+                  <input style="overflow:hidden" required id = "rating" type="radio" name="rating" value="3"><i></i>
+                  <input style="overflow:hidden" required id = "rating" type="radio" name="rating" value="4"><i></i>
+                  <input style="overflow:hidden" required id = "rating" type="radio" name="rating" value="5"><i></i>
+                </span>
+                <% end %>
+                <% end %>
+                <textarea class="textarea-box img-rounded" cols="100" rows="1" required name="postcontent" placeholder="별점 체크 후 평가를 남겨주세요"></textarea>
+              </div>
+            </div>
+            <i class="fa fa-tag" style="font-size:25px;"></i>
+            <span style="margin-left:5px">태그</span>
+            <i class="fa fa-plus" id="moretag" title="태그" onclick="addForm()" style="cursor:pointer;font-size:12px"></i>
+            &nbsp;|
+            <i class="fa fa-times"style="cursor:pointer;font-size:13px"onclick="delForm()"></i><br>
+            <div id="tag" class="each-form-single-line form-group form-group-lg" style="margin-bottom:0px">
+              <input type="text" class="plz" name="0" data-value="0"style="margin-right:5px;border-style:none;border-bottom:0.5px solid #666666" placeholder="태그를 추가하세요!">
+            </div>   
+            <div>
+              <input id = "submit_button" class="btn btn-primary" style="float:right" type="submit" value="Post">
+            </div>
+        </form> 
+      </div>
+      <div class="modal-footer modal_footer_addimage">   
+      </div>
+    </div>
+  </div>
+  <div style="display: none" class="loading"></div>
+</div>
+<% end %>
+<!-- Modal for Add iamge END -->
+
+<!-- Modal for LikeList -->
+<div id="like_list" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog_like_list" style="width:20%; height:50%">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="like_list_close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">좋아요</h4>
+      </div>
+      <div class="modal-body" id="likelist_modal_name">
+               
+      </div>
+      <div class="modal-footer" style="border-style:none">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END -->
+
+<!-- Javascript for Google Map -->
+<script type="text/javascript">
+  var marker;
+  var infowindow;
+  var map;
+  var mapOptions = {
+    zoom: 18,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    center: new google.maps.LatLng($("#lat").val(), $("#lng").val())
+  };
+    
+  map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+  infowindow = new google.maps.InfoWindow({});
+  marker = new google.maps.Marker({
+    map:map,
+    position: new google.maps.LatLng($("#lat").val(), $("#lng").val()),
+    });
+  google.maps.event.addListener(marker, 'click', function() {
+      
+      map.setCenter(marker.getPosition());
+  });
+</script>
+<!-- Javascript for Google Map END!!!!-->
+
+<script type="text/javascript">
+$(document).ready(function(){
+  window.onload = function() {
+    var divs = document.querySelectorAll('.div_commentimage');
+    for(var i = 0; i<divs.length;i++){
+      var div = divs[i];
+      var divAspect = div.offsetHeight / div.offsetWidth;
+      var img = div.querySelector('.img_commentimage');
+      var imgAspect = img.height / img.width;
+
+     if(imgAspect<=divAspect){
+        img.style.cssText = "width: auto; height: 262.5px;";
+     }
+     else{
+        img.style.cssText = "width: 262.5px; height: auto;";
+     }
+    }
+  };
+});
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var windows = document.querySelectorAll("#window");
+    var currentId;
+    var length = windows.length;
+    $(".img_commentimage").click(function(e){
+      currentId = $(this).val();
+      for(var i=0;i<length;i++){
+        if(currentId==windows[i].getAttribute('data-value')){
+          windows[i].setAttribute('style','display:block');
+        }
+      }
+  
+      e.preventDefault();
+      
+    });
+
+    $(".close").click(function(){
+      $("#myModal, #window").hide();
+      $('#myModal').on('hidden.bs.modal', function () {
+        //location.reload();
+      });
+    });
+    $('div[name=modal_window]').click(function(){
+      $("#myModal, #window").hide();
+      $('#myModal').on('hidden.bs.modal', function () {
+        //location.reload();
+      });
+    });
+    $('.leftbutton').click(function(){
+      var index = $(this).data("value");
+      var i=0;
+      while(index!=windows[i].getAttribute('data-value')){
+        i++;
+      }
+      if(i==0){
+        windows[i].setAttribute('style','display:none');
+        windows[length-1].setAttribute('style','display:block');
+      }
+      else{
+        windows[i].setAttribute('style','display:none');
+        windows[i-1].setAttribute('style','display:block');
+      }
+    });
+    $('.rightbutton').click(function(){
+      var index = $(this).data("value");
+      var i=0;
+      while(index!=windows[i].getAttribute('data-value')){
+        i++;
+      }
+      if(i==length-1){
+        windows[i].setAttribute('style','display:none');
+        windows[0].setAttribute('style','display:block');
+      }
+      else{
+        windows[i].setAttribute('style','display:none');
+        windows[i+1].setAttribute('style','display:block');
+      }
+    });
+    $('#myModal').on('hidden.bs.modal', function () {
+      //location.reload();
+    });
+  });
+</script>
+
+<script type="text/javascript">
+   var count = 1;
+   function addForm(){
+     var addedFormDiv = document.getElementById("tag");
+     var addedinput = document.createElement("input"); // 폼 생성
+     addedinput.className = 'plz';
+     addedinput.type ='text';
+     addedinput.placeholder = '태그를 추가하세요!';
+     addedinput.name = count;
+     addedinput.id = "tag"+count; // input에 ID 부여 (삭제를 위해)
+     addedinput.style.cssText = "margin-right:5px;border-style:none;border-bottom:0.5px solid #666666";
+     addedFormDiv.appendChild(addedinput); // 삽입할 DIV에 생성한 폼 삽입
+     count++;
+     document.baseForm.count.value=count;
+     // 다음 페이지에 몇개의 폼을 넘기는지 전달하기 위해 히든 폼에 카운트 저장
+   }
+   function delForm(){
+     var addedFormDiv = document.getElementById("tag");
+
+     if(count >1){ // 현재 폼이 두개 이상이면
+                count--;
+                var addedinput = document.getElementById("tag"+count);
+                // 마지막으로 생성된 폼의 ID를 통해 input객체를 가져옴
+                addedFormDiv.removeChild(addedinput); // 폼 삭제                  
+     }else{ // 마지막 폼만 남아있다면
+                document.baseForm.reset(); // 폼 내용 삭제
+     }
+     document.baseForm.count.value=count;
+   }
+</script>
+
+<!-- Javascript for Post -->
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('i[id=photo]').click(function(e){
+      e.preventDefault();
+      $('input[id=postimage]').click();
+    });
+  });
+</script>
+<!-- Post END -->
+<script type="text/javascript">
+  function del_reply(id) {
+    var replyblocks = document.querySelectorAll("#replyblock");
+    for(var i =0; i<replyblocks.length;i++){
+      if(id==replyblocks[i].getAttribute('data-value')){
+       replyblocks[i].setAttribute('style','display:none');
+        $.ajax({
+          data: {reply_id: id},
+          url: "/cafe/delete_reply"
+        });
+      }
+    }
+  }
+</script>
+
+<script type="text/javascript">
+  function edit_reply(id){
+    var replyblocks = document.querySelectorAll("#replyblock");
+    var reply_contents = document.querySelectorAll("#reply_contents");
+    var content = document.querySelectorAll("#replycontent");
+    var reply_submit = document.querySelectorAll('.reply_edit');
+    var reply_cancel = document.querySelectorAll('.reply_delete');
+    var time_span = document.querySelectorAll('#reply_username_content_time2 > span');
+    var i = 0;
+    var j = 0;
+    var k = 0;
+    while(id != replyblocks[i].getAttribute('data-value')){
+      i++;
+    }
+    while(id != reply_submit[j].getAttribute('data-value')){
+      j++;
+    }
+    reply_submit[j].textContent=" "+"완료";
+    reply_cancel[j].textContent=" "+"취소";
+    time_span[i].setAttribute('data-value',id);
+    var edit_textarea = document.createElement('textarea');
+    edit_textarea.className ='textarea-box img-rounded e_reply';
+    edit_textarea.setAttribute('cols',100);
+    edit_textarea.setAttribute('rows',1);
+    edit_textarea.setAttribute('style','margin-left:0px');
+    edit_textarea.setAttribute('data-value',id);
+    edit_textarea.textContent=content[i].innerText;
+    var added_reply_content_div = document.createElement('div');
+    added_reply_content_div.className="col-md-9 col-sm-9 col-xs-9";
+    added_reply_content_div.id='reply_contents';
+    added_reply_content_div.setAttribute('data-value',id);
+    added_reply_content_div.setAttribute('style','padding-left:0');
+    added_reply_content_div.appendChild(edit_textarea);
+    replyblocks[i].appendChild(added_reply_content_div);
+    reply_submit[j].onclick=function(){
+      var e_reply = document.querySelectorAll(".e_reply");
+      while(id!=e_reply[k].getAttribute('data-value')){
+        k++;
+      }
+      var reply = e_reply[k].value;
+      $.ajax({
+        data:{reply: reply,
+              reply_id: id},
+        url:'/cafe/edit_reply',
+        success:function(json){
+          var json_data = $.parseJSON(json);
+          content[i].textContent=" "+reply;
+          time_span[i].textContent=json_data.writtentime;
+          added_reply_content_div.removeChild(edit_textarea);
+          replyblocks[i].removeChild(added_reply_content_div);
+          reply_submit[j].textContent=" "+"수정";
+          reply_cancel[j].textContent=" "+"삭제";
+          reply_cancel[j].onclick=function () {del_reply(id);};
+          reply_submit[j].onclick=function () {edit_reply(id);};
+        }
+      });
+    }
+    reply_cancel[j].onclick=function(){
+      added_reply_content_div.removeChild(edit_textarea);
+      replyblocks[i].removeChild(added_reply_content_div);
+      reply_submit[j].textContent=" "+"수정";
+      reply_cancel[j].textContent=" "+"삭제";
+      reply_cancel[j].onclick=function () {del_reply(id);};
+      reply_submit[j].onclick=function () {edit_reply(id);};  
+    }
+  }
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var reply_divs = document.querySelectorAll("#reply_div");
+    var index;
+    $(".reply").keypress(function(e){
+      if(e.which == 13){
+        <% if current_user.nil? %>
+          alert("로그인을 해야 댓글을 달 수 있습니다.");
+          window.location.href = "/users/sign_in/";
+        <% else %>
+          var reply = $(this).val();
+          var id = $(this).data("value");
+          for(var i =0; i<reply_divs.length;i++){
+            if(id==reply_divs[i].getAttribute('data-value')){
+              index = i;
+              $.ajax({
+                data: {reply: reply,
+                       post_id: id},
+                url: "/cafe/add_reply",
+                success: function(json){
+                  var txt = reply;
+                  var json_data = $.parseJSON(json);
+                  var added_reply_block_div = document.createElement('div');
+                  added_reply_block_div.className='row';
+                  added_reply_block_div.id='replyblock';
+                  added_reply_block_div.setAttribute('data-value',json_data.id);
+
+                  var added_reply_image_div = document.createElement('div');
+                  added_reply_image_div.className="col-md-3 col-sm-3 col-xs-3";
+                  added_reply_image_div.id='replyimage';
+
+                  var added_reply_content_div = document.createElement('div');
+                  added_reply_content_div.className="col-md-9 col-sm-9 col-xs-9";
+                  added_reply_content_div.id='reply_contents';
+                  added_reply_content_div.setAttribute('data-value',json_data.id);
+
+                  var image = document.createElement('img');
+                  image.className='img-circle';
+                  <% unless current_user.nil?%>
+                    <% if current_user.image? %>
+                      image.src = '<%=current_user.image.url %>';
+                    <% else %>
+                      image.src = '<%= image_url('profile_default.jpg') %>';
+                    <% end %>
+                  <% else %>
+                    image.src = '<%= image_url('profile_default.jpg') %>';
+                  <% end %>
+
+                  var rowdiv1 = document.createElement('div');
+                  rowdiv1.className = 'row';
+
+                  var added_reply_username_content_time1 = document.createElement('div');
+                  added_reply_username_content_time1.id='reply_username_content_time1';
+
+                  var added_reply_username_content_time2 = document.createElement('div');
+                  added_reply_username_content_time2.id='reply_username_content_time2';
+
+                  var a_tag = document.createElement('a');
+                  a_tag.id='replyname';
+                  <% unless current_user.nil? %>
+                    a_tag.text='<%=current_user.name%>';
+                  <% else %>
+                    a.tag.text='';
+                  <% end %>
+
+                  var rowdiv2 = document.createElement('div');
+                  rowdiv2.className='row';
+
+                  var span = document.createElement('span');
+                  span.id='replycontent';
+                  var time_span = document.createElement('span');
+                  var del_a = document.createElement('a');
+                  del_a.onclick=function () {del_reply(json_data.id);};  
+                  del_a.className='reply_delete';
+                  del_a.setAttribute('data-value',json_data.id);
+                  var edit_a = document.createElement('a');
+                  edit_a.onclick=function () {edit_reply(json_data.id);};
+                  edit_a.className='reply_edit';
+                  edit_a.setAttribute('data-value',json_data.id);
+
+                  added_reply_username_content_time1.appendChild(a_tag);
+                  added_reply_username_content_time1.appendChild(span).textContent=" "+txt;
+                  added_reply_username_content_time2.appendChild(time_span).textContent=json_data.writtentime;
+                  added_reply_username_content_time2.appendChild(edit_a).textContent=" "+"수정";
+                  added_reply_username_content_time2.appendChild(del_a).textContent=" "+"삭제";
+                  rowdiv1.appendChild(added_reply_username_content_time1);
+                  rowdiv2.appendChild(added_reply_username_content_time2);
+                  added_reply_image_div.appendChild(image);
+                  added_reply_content_div.appendChild(rowdiv1);
+                  added_reply_content_div.appendChild(rowdiv2);
+                  added_reply_block_div.appendChild(added_reply_image_div);
+                  added_reply_block_div.appendChild(added_reply_content_div);
+                  reply_divs[index].appendChild(added_reply_block_div);
+                  $(".reply").val("");
+                  $(".reply").focus();
+                  e.preventDefault();
+                }
+              });
+            }
+          }
+        <% end %>
+      }
+    });
+  });
+</script>
+<script type="text/javascript">
+  $(document).keyup(function(e){
+    if (e.keyCode == 27) {
+      $('.close').click();
+    }
+  });
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $(".div_commentimage").hover(
+    function () {
+      $(this).css("background-color", "#666");
+      $(this).css("opacity","0.8");
+    }, 
+    function () {
+      $(this).css("background-color", "none");
+      $(this).css("opacity","1");
+    }
+  );
+});
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.cafeimage-addimage').click(function(){
+      <% if current_user.nil? %>
+      window.location.href = "/users/sign_in";
+      <% end %>
+    });
+  });
+</script>
+<!-- 윈도우 익스플로러 수정사항
+-카페디테일뷰 사진추가 뷰에서 태그 추가시 태그폼 사이 margin 수정
+-카페디테일뷰 카페사진 사이의 margin 수정/가운데 정렬
+ -->
+ <script type="text/javascript">
+$(function(){
+  $("#submit_button").click(function(e){
+     e.preventDefault();
+     $('.loading').show();
+     $(this).closest('form').submit();
+  });
+})  
+</script>
+
+<script type="text/javascript">
+$(function(){
+  <% @cafe.posts.each do |p| %>
+    var liked = <%= p.likes.where(:user_id => current_user.id).blank? %>
+    var like_count_first =  parseInt($("#like_count_<%= p.id %>").text())
+    if(like_count_first==0)
+    {
+      $("#like_list_button_<%= p.id %>").hide();
+    }
+    else
+    {
+      $("#like_list_button_<%= p.id %>").show();
+    }
+        
+    if(!liked)
+    {
+      $("#like_button_"+<%= p.id %>).removeClass("fa-heart-o").addClass("fa-heart");
+    }
+    $("#like_button_"+<%= p.id %>).click(
+      function(){
+        var like_count =  parseInt($("#like_count_<%= p.id %>").text())
+        // var like_text =  $("#like_button_<%= p.id %>").text()      
+        
+        if($("#like_button_<%= p.id %>").hasClass('fa-heart-o'))
+        {
+          ++like_count
+          
+          $.ajax({
+            data: {
+                post_id: <%= p.id %>
+            },
+            url: "/home/like_save",
+            success: function(){
+              $("#like_count_"+<%= p.id %>).html(""+like_count);
+              $("#like_count_card_"+<%= p.id %>).html(""+like_count);
+              if(like_count==0)
+              {
+                $("#like_list_button_<%= p.id %>").hide();
+                $("#like_list_card_button_<%= p.id %>").hide();
+              }
+              else
+              {
+                $("#like_list_button_<%= p.id %>").show();
+                $("#like_list_card_button_<%= p.id %>").show();
+              }
+              $("#like_button_"+<%= p.id %>).removeClass("fa-heart-o").addClass("fa-heart");
+            }
+          });
+        }
+        else
+        {
+          --like_count
+      
+          $.ajax({
+              data: {
+                  post_id: <%= p.id %>
+              },
+              url: "/home/like_cancel_save",
+              success: function(){                
+                $("#like_count_"+<%= p.id %>).html(""+like_count);
+                $("#like_count_card_"+<%= p.id %>).html(""+like_count);
+                if(like_count==0)
+                {
+                  $("#like_list_button_<%= p.id %>").hide();
+                  $("#like_list_card_button_<%= p.id %>").hide();
+                }
+                else
+                {
+                  $("#like_list_button_<%= p.id %>").show();
+                  $("#like_list_card_button_<%= p.id %>").show();
+                }
+                $("#like_button_"+<%= p.id %>).removeClass("fa-heart").addClass("fa-heart-o");
+              }
+          });
+        }
+      }
+    );
+    $("#like_list_button_"+<%= p.id %>).click(function(){
+    $.ajax({
+      url: "/home/like_read/"+<%= p.id %>,
+      success:function(json){
+        var json_data = $.parseJSON(json);
+        var i;
+        $('#likelist_modal_name').html(''); 
+        for(i=0;i<json_data.length;i++)
+        {
+          if(json_data[i].image.url ==null)
+            $('#likelist_modal_name').append('<div class="row removing"><div class="col-lg-12">'+'<a href="/home/profile/'+json_data[i].user_hash+'"'+'style="color:black">'+'<img src="<%=image_url('profile_default.jpg')%>" class="img-circle">&nbsp;'+json_data[i].name+'</a></div></div><br>');
+          else
+            $('#likelist_modal_name').append('<div class="row removing"><div class="col-lg-12">'+'<a href="/home/profile/'+json_data[i].user_hash+'"'+'style="color:black">'+'<img src="'+json_data[i].image.url+'" class="img-circle">&nbsp;'+json_data[i].name+'</a></div></div><br>');
+        }        
+      }
+    });
+  });
+  <% end %>
+
+})  
+</script>
+<!-- ajax for following -->
+<script type="text/javascript">
+$(document).ready(function(){
+  <% @cafe.posts.each do |c| %>
+    <% unless current_user.following?(User.where(:id=>c.user_id).take) %>
+      $('#follow_<%=c.id%>').show();
+      $('#unfollow_<%=c.id%>').hide();
+    <% else %>
+      $('#follow_<%=c.id%>').hide();
+      $('#unfollow_<%=c.id%>').show();
+    <% end %>
+    $('#follow_<%=c.id%>').click(function(){
+      $.ajax({
+        url: "/home/follow_user/<%=c.user_id%>",
+        success:function(){
+          $('#follow_<%=c.id%>').hide();
+          $('#unfollow_<%=c.id%>').show();
+        }
+      });
+    });
+    $('#unfollow_<%=c.id%>').click(function(){
+      $.ajax({
+        url: "/home/unfollow_user/<%=c.user_id%>",
+        success:function(){
+          $('#follow_<%=c.id%>').show();
+          $('#unfollow_<%=c.id%>').hide();
+        }
+      });
+    });
+  <% end %>
+})
+</script>
+<!-- ajax following end -->

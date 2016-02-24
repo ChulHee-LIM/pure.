@@ -1,0 +1,199 @@
+<div class="devise-container">
+   <div class="caferegister-container">        
+      <!-- Username & Password Login form -->
+      <div class="bucket-container" style="margin-top:0px">
+        <div  class="row">          
+          <div class="col-md-12">
+            <div>
+            <h1 class="headline text-weight_300">
+               카페 등록하기
+            </h1>
+            </div>
+            <form action="/cafe/cafecreate" enctype="multipart/form-data" class="new_project_request text-left" id="new_project_request" name="frm_payment" method="post">
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>카페 이름</h4>
+                    <input class="form-control input-sm" type="text" placeholder="카페 이름" name="cafename" id = "cafename" value="" required><br>
+                </div>
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>카페 주소</h4>
+                    <!-- <input class="form-control input-lg" type="text" placeholder="Cafe's address" name="address" value="" required><br> -->
+                  <div class="postnumber input-group input-group-sm col-md-4 col-md-offset-0">
+                    <input id="postcode" type="text" class="form-control" style="padding:5px; text-align:center" placeholder="우편번호" name="buyer_postcode" readonly="true" value="">
+                    <span class="input-group-btn">
+                      <a class="btn btn-danger" onclick="execDaumPostcode()" type="submit">검색</a>
+                    </span>
+                  </div>
+                  <br>
+                  <input class="form-control input-sm" name = "buyer_addr" type="text" id="buyer_addr" placeholder="주소" readonly="true" value="" ><br>
+                  <input class="form-control input-sm" type="hidden" name = "address_jibun" id="jibunAddress" placeholder="지번주소" readonly="true" value="">
+                  <input class="form-control input-sm" name = "address_detail" type="text" id="address_detail" placeholder="상세주소" value="">
+                  
+                  <!-- <input type="submit" value="저장" %> -->
+                </div>
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>로고 사진</h4>
+                    <input type="file" name="thumbnail" id ="thumbnail"accept="image/*">
+                </div>
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>대표 사진</h4>
+                    <input type="file" name="cafeimage" id="cafeimage" accept="image/*">
+                </div>
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>연락처</h4>
+                    <input class="form-control input-sm" type="text" name="cafecontact" id="cafecontact" placeholder="연락처" required>
+                </div>
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>카페 소개</h4>
+                      <textarea class="form-control" rows="11" placeholder="카페 소개" name="intro_detail" id ="intro_detail" required></textarea>
+                </div>
+                <div class="each-form-single-line form-group form-group-sm ">
+                  <h4>소셜 미디어</h4>
+                  <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon"><i class="fa fa-facebook-square fa-1x" style="width:125px;"></i></span>
+                    <input class="form-control input-sm" type="text" placeholder="페이스북 주소" name="facebook_address" id="facebook_address" >
+                  </div>
+                  <br>
+                  <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon"><i class="fa fa-instagram fa-1x" style="width:125px;"></i></span>
+                    <input class="form-control " type="text" placeholder="인스타그램 주소" name="instagram_adderess" id="instagram_adderess" >  
+                  </div> 
+                  <br>
+                  <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon"><i class="fa fa-chrome fa-1x"  style="width:125px;"></i></span>
+                    <input class="form-control input-sm" type="text" placeholder="홈페이지 주소" name="webinfo_adderess" id="webinfo_adderess" >
+                  </div>
+                  <br>
+                  <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon"><i class="fa fa-book fa-1x"  style="width:125px;" ></i></span>
+                    <input class="form-control input-sm" type="text" placeholder="블로그 주소" name="blog_adderess" id="blog_adderess" >
+                  </div>
+                  <br>
+                </div> 
+                <!-- 소셜정보 끝 -->
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>대표 메뉴</h4>
+                    <input class="form-control input-sm" type="text" placeholder="시그니처 메뉴" name="signaturemenu" id="signaturemenu" required><br>
+                </div>
+                <h4>보유 장비</h4>
+                  <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon" ><i class="fa" style="width:125px;"> machine</i></span>
+                    <input class="form-control input-sm" type="text" name="machine" placeholder="machine" id="machine">
+                  </div>
+                  <br>
+                  <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon" ><i class="fa" style="width:125px;">grinder</i></span>
+                    <input class="form-control input-sm" type="text" placeholder="grinder" name="grinder" id="grinder">
+                  </div>
+                  <br>
+                  <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon" ><i class="fa" style="width:125px;">beans</i></span>
+                    <input class="form-control input-sm" type="text" placeholder="beans" name="beans" id="beans">
+                  </div>
+                  <br>
+                  <div class="input-group margin-bottom-sm">
+                    <span class="input-group-addon" ><i class="fa" style="width:125px;">brewing method</i></span>
+                    <input class="form-control input-sm" type="text" placeholder="brewing method" name="brewing_method" id="brewing_method">
+                  </div>
+                  <br>
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>영업 시간</h4>
+                  <div class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                      <input class="form-control input-sm" name="opening_time" type="time">
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-1" style="text-align:center;display:table">
+                      <h4 style="width:100%; height:46px; margin:0px; vertical-align:middle; display:table-cell;">~</h4>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-2">
+                      <input class="form-control input-sm" name="closing_time" type="time">
+                    </div>
+                  </div>
+                </div>
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>시설</h4>
+                  <input type="checkbox" id="meal_available"name="meal_available" value="checked">&nbsp;식사 가능&nbsp;
+                  <input type="checkbox" id="parking" name="parking" value="checked">&nbsp;주차 가능&nbsp;
+                  <input type="checkbox" id="wifi" name="wifi" value="checked">&nbsp;와이파이 제공&nbsp;
+                  <input type="checkbox" id="sidemenu" name="sidemenu" value="checked">&nbsp;SideMenu&nbsp; <br>
+                  <input type="checkbox" id="animal_available" name="animal_available" value="checked">&nbsp;애완 동물 출입 가능&nbsp;
+                  <input type="checkbox" id="in_house_roasting" name="in_house_roasting" value="checked">&nbsp;in house roasting&nbsp;
+                  <input type="checkbox" id="smoke" name="smoke" value="checked">&nbsp;흡연 공간 보유&nbsp;
+                  <input type="checkbox" id="today_business_check" name="today_business_check" value="checked" checked="checked">&nbsp;영업여부&nbsp;(&nbsp;당일 영업 여부를 선택하십시오. 선택을 해제할 경우 영업휴일로 전환됩니다.&nbsp;)
+                </div>
+                
+                <div class="each-form-single-line form-group form-group-sm">
+                  <h4>카페 태그</h4>
+                  <span>태그를 달아주세요 (ex 라떼, 에스프레소, 케익)</span>
+                    <input class="form-control input-sm" id="tag1" type="text" placeholder="tag1" name="tag1" value="" required><br>
+                    <input class="form-control input-sm" id="tag2" type="text" placeholder="tag2" name="tag2" value="" required><br>
+                    <input class="form-control input-sm" id="tag3" type="text" placeholder="tag3" name="tag3" value="" required><br>
+                </div>         
+                <div>
+                  <!-- <input class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12 col-lg-12" type="submit" value="생성하기" id="submit_button"> -->
+                  <input id = "submit_button" class="btn btn-primary btn-sm col-xs-12 col-sm-12 col-md-12 col-lg-12" type="submit" value="등록하기">
+                </div>
+            </form>   
+          </div>
+        </div>
+      </div>      
+  </div>
+</div>
+<div style="display: none" class="loading"></div>
+
+<script type="text/javascript">
+//우편번호 찾기 버튼 클릭 시
+function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var fullAddr = ''; // 최종 주소 변수
+                var extraAddr = ''; // 조합형 주소 변수
+                var Jibun_address = '';
+
+                // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if(data.autoJibunAddress)
+                {
+                  JibunAddress = data.autoJibunAddress;
+                }
+                else{
+                  JibunAddress = data.jibunAddress;
+                }
+                
+
+                // 사용자가 선택한 주소가 도로명 타입일때 조합한다.
+                if(data.userSelectedType === 'R'){
+                    //법정동명이 있을 경우 추가한다.
+                    if(data.bname !== ''){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있을 경우 추가한다.
+                    if(data.buildingName !== ''){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+                    fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('postcode').value = data.zonecode; //5자리 새우편번호 사용
+                document.getElementById('buyer_addr').value = data.roadAddress;
+                document.getElementById('jibunAddress').value = JibunAddress;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById('address_detail').focus();
+            }
+        }).open();
+    }
+</script>
+
+<script type="text/javascript">
+$(function(){
+  $("#submit_button").click(function(e){
+     e.preventDefault();
+     $('.loading').show();
+     $(this).closest('form').submit();
+  });
+})  
+</script>

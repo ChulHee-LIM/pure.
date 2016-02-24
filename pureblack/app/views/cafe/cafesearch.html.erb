@@ -1,0 +1,284 @@
+<!-- Javascript for Google Map -->
+
+<script type="text/javascript">
+$(document).ready(function(){
+  window.onload = function() {
+  var infowindow;
+  var map;
+  var markers = [];
+  var locations = [];
+  <% @cafe.each do |x| %>
+  locations.push({
+    name: '<%=x.name%>',
+    thumnail: '<%=x.thumnail.url%>',
+    address: '<%=x.address%>',
+    address_road: '<%=x.address_road%>',
+    image: '<%=x.image.url%>',
+    cafecontact: '<%=x.cafecontact%>',
+    cafehash: '<%=x.cafehash%>',
+    latitude: <%= x.latitude %>,
+    longitude: <%= x.longitude %>, 
+    user_email: '<%=x.user.email%>'
+  });
+  <% end %>
+  var mapOptions = {
+    center: new google.maps.LatLng(36.566666,128.716660),
+    zoom: 7,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+  };
+    
+  map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+  
+  
+  function setMarker(lat,lng,title,html){
+    var marker = new google.maps.Marker({
+    map:map,
+    position: new google.maps.LatLng(lat,lng),
+    title: title,
+    info: html
+    });
+    infowindow = new google.maps.InfoWindow({});
+  google.maps.event.addListener(marker, 'click', function() {
+      infowindow.setContent(html);
+      infowindow.open(map,marker);
+      map.setCenter(marker.getPosition());
+  }); 
+    markers.push(marker);
+  }
+  var bounds = new google.maps.LatLngBounds();
+  for(var i = 0 ; i < locations.length ; i++)
+  {
+    setMarker(locations[i].latitude,locations[i].longitude,locations[i].address,'<a href="/cafe/cafedetail?hash='+locations[i].cafehash+'"style="decoration:none;color:black">'+'<h5>'+locations[i].name+'</a></h5>'+'<span style="font-weight:bold">주소 :&nbsp;</span>'+locations[i].address_road+'<br>'+'<span style="font-weight:bold">연락처 :&nbsp;</span>'+locations[i].cafecontact+'<br>'+'<span style="font-weight:bold">이메일 :&nbsp;</span>'+locations[i].user_email);
+      bounds.extend(new google.maps.LatLng(locations[i].latitude,locations[i].longitude));
+  }
+  map.fitBounds(bounds);
+
+  $('img').mouseover(function(){
+    var address = $(this).attr('address');
+    for(var i=0;i<markers.length;i++)
+    {
+      if(markers[i].title == address)
+      {
+        markers[i].setAnimation(google.maps.Animation.BOUNCE);
+        infowindow.setContent(markers[i].info);
+        infowindow.open(map,markers[i]);
+        map.setZoom(18); 
+        map.setCenter(markers[i].getPosition()); 
+      }
+        
+    }
+  }).mouseout(function(){
+    for(var i=0;i<markers.length;i++)
+    {
+      markers[i].setAnimation(null);
+    }
+  });
+  google.maps.event.addListener(infowindow, 'closeclick', function() {
+  for(var i=0;i<markers.length;i++)
+    {
+      markers[i].setAnimation(null);
+      bounds.extend(markers[i].getPosition());
+      map.fitBounds(bounds);
+    }
+  });
+     
+};
+});
+</script>
+<!-- Javascript for Google Map END!!!!-->
+<div class="container-fulid"> 
+  <!--<div class="row" style="border-bottom:1px solid #d9d9d9; margin-top:10px">
+    <div class="top-sentence">
+        <span class="topsent1">스페셜한 하루를 위해!</span><br>
+        <span class="topsent2">특별해지는 경험을 해보세요.</span>
+      </div>
+  </div>-->
+  <div class="row" style="transform:translateY(1%)">
+    <div class="col-md-7" style="padding-left:14px; padding-right:30px; overflow-x: hidden;height:800px; padding-right: 0px; background-color:#f5f5f5">
+      <div class="row">
+        <div class="white" style="padding-top: 5px">
+          <div style="width:100%; margin-bottom:40px">
+          </div>
+
+          <div class="row" style="position:relative; line-height:100%">
+            <div class="col-lg-3 col-md-3" style="height:80px">
+              <p style="padding-left:10%; line-height:80px; text-align:center">관련 인기태그</p>
+            </div>
+            <div class="col-lg-9 col-md-9" style="width:60%; height:auto">
+              <div class="panel-body" style="text-align:center">
+                <% if @hashtags.count < 8 %>
+                  <% @hashtags.each do |c| %>
+                    <form action="/cafe/cafesearch" method="GET">
+                      <input type="hidden" name="searchword" value="<%= c %>">
+                      <input class="tag" type="submit" style="margin-bottom:5px; margin-right:5px" value="#<%= c %>">
+                    </form>
+                  <% end %>
+                <% else %>
+                  <% @hashtags.to(7).each do |c| %>
+                    <form action="/cafe/cafesearch" method="GET">
+                      <input type="hidden" name="searchword" value="<%= c %>">
+                      <input class="tag" type="submit" style="margin-bottom:5px; margin-right:5px" value="#<%= c %>">
+                    </form>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="row profile_hr" style="margin-bottom:10px">
+            <div class="row">
+              <div class="col-md-3 col-xs-0" style="padding-left:8%">
+                <button class="btn btn-primary" style="margin-bottom:10px; margin-top:10px" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">검색필터 추가</button>
+              </div>
+              <div class="col-md-3 col-xs-6">
+                
+              </div>
+              <div class="col-md-3 col-xs-6">
+                
+              </div>
+            </div>
+            </div>
+            <div class="collapse" id="collapseExample" style="margin-top:10px">
+              <div class="well white category" style="padding-left:5%; padding-right:5% padding-top: 10px; padding-bottom:10px">
+                <form action="cafesearch" action="GET">
+                  <input type="hidden" name="cafe_reorder" value="2">
+                  <input type="hidden" name="searchword" value="<%=@search%>">
+                  <div class="row" style="text-align:left">
+                    <div class="col-lg-3">
+                      <label for="chk1" class="cafesearch_checkbox"><span class="glyphicon glyphicon-cutlery"></span>&nbsp;식사가능<input type="checkbox" style="float:right" id="chk1" name="meal_available" value=true></label>
+                    </div>
+                    <div class="col-lg-3">
+                      <label for="chk2" class="cafesearch_checkbox"><i class="fa fa-car"></i>&nbsp;주차가능<input type="checkbox" style="float:right" id="chk2" name="parking" value=true></label>
+                    </div>
+                    <div class="col-lg-3">
+                      <label for="chk3" class="cafesearch_checkbox"><i class="fa fa-wifi"></i>&nbsp;무선인터넷<input type="checkbox" style="float:right" id="chk3" name="wifi" value=true></label>
+                    </div>
+                    <div class="col-lg-3">
+                      <label for="chk4" class="cafesearch_checkbox"><span class="glyphicon glyphicon-apple"></span>&nbsp;사이드메뉴<input type="checkbox" style="float:right" id="chk4" name="sidemenu" value=true></label>
+                    </div>
+                  </div>
+                  <div class="row" style="text-align:left">
+                    <div class="col-lg-3">
+                      <label for="chk5" class="cafesearch_checkbox"><i class="fa fa-paw"></i>&nbsp;반려견 출입가능<input type="checkbox" style="float:right" id="chk5" name="animal_available" value=true></label>
+                    </div>
+                    <div class="col-lg-3">
+                      <label for="chk6" class="cafesearch_checkbox"><i class="fa fa-coffee"></i>&nbsp;In house roast<input type="checkbox" style="float:right" id="chk6" name="in_house_roasting" value=true></label>
+                    </div>
+                    <div class="col-lg-3">
+                      <label for="chk7" class="cafesearch_checkbox"><span class="glyphicon glyphicon-sunglasses"></span>&nbsp;흡연실 유무<input type="checkbox" style="float:right" id="chk7" name="smoke" value=true></label>
+                    </div>
+                    <div class="col-lg-3">
+                      <label for="chk8" class="cafesearch_checkbox"><i class="fa fa-check-square"></i>&nbsp;영업여부<input type="checkbox" style="float:right" id="chk8" name="today_business_check" checked="true" value=true></label>
+                    </div>
+                  </div>
+                  <div class="row" style="padding-right:2%; text-align:right">
+                    <button class="btn btn-default" style="margin-top:5px" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">취소하기</button>
+                    <input class="btn btn-danger" style="margin-top:5px" type="submit" value="검색하기">
+                  </div>              
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom:20px">
+          <div class="col-lg-8">
+            <form action="/cafe/cafesearch" method="GET">
+              <input type="hidden" name="searchword" value="<%= @search %>">
+              <input type="hidden" name="cafe_reorder" value="1">            
+              <input class="btn btn-link" type="submit" style="border-width:0px;padding-top:0px;padding-bottom:0px" value="후기순으로 보기">
+            </form>
+          </div>
+          <div class="col-lg-4" style="text-align:right; right:20px">
+            <span><%=@cafe.count%>개의 카페 검색결과</span>
+          </div> 
+        </div>
+        <% if @cafe.empty? %>
+          <div class="row" style="padding-left:10%">
+            <br>
+            <br>
+            검색어와 일치하는 카페를 찾을 수 없습니다. <br>
+            검색어를 다시 확인하거나 다른 이름, 주소 또는 메뉴를 입력해 보세요.
+          </div>
+        <% else %>
+          <div class="grid" style="margin: 0 auto">
+            <% @cafe.each do |cafe| %>
+              <div class="grid-item" style="margin:0px 3px">
+                <input type="hidden" id="cafe_id" name="cafe_id" value="<%= cafe.id %>">
+                <!--카페 리스트 -->
+                <div class="panel-bottom <%= cafe.posts.count %>" id="item_searched">
+                  <div class="panel panel-default" style="border-radius:10px;">
+                    <div class="panel-body panel-img" style="">
+                      <a href="/cafe/cafedetail?hash=<%=cafe.cafehash%>" style="decoration:none;color:black;">
+                        <img src='<%=cafe.image.thumb2.url%>' alt="<%=cafe.name%>" style="width:100%;height:260px;padding: 0px;margin: 0px;border-top-left-radius: 9px;border-top-right-radius: 9px;" address="<%=cafe.address%>">
+                        <div style="padding:10px;">
+                          <div style="width:100%;height:54px;text-align: left;display: table;">
+                            <div style="display: table-cell;vertical-align: middle;font-size: 11px;padding-left: 10px;padding-right: 10px">
+                              <%= cafe.introduction %>
+                            </div>
+                          </div>
+                          <hr style="margin:0px">
+                          <div style="width:100%;height:50px;padding: 10px;display:table;text-align:center">
+                            <a href="/cafe/cafedetail?hash=<%=cafe.cafehash%>" style="decoration:none;color:black;">
+                              <img src="<%=cafe.thumnail.url %>" style="width:30px; height:30px; float:left; padding: 0px" alt="..." class="img-circle">
+                            </a>
+                            <div style="width:100%;display:table-cell;vertical-align: middle;padding-left:5px">
+                              <div style="width:80%;height: 15px;float: left;">
+                                <a href="/cafe/cafedetail?hash=<%=cafe.cafehash%>" style="decoration:none;color:black;">
+                                  <p style="font-weight:bold; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;color: #555; margin: 0px;text-align: left;font-size:11px">
+                                    &nbsp; &nbsp; <%=cafe.name%>
+                                  </p>
+                                  <br>
+                                </a>  
+                              </div>
+                              <br>
+                              <div style="width:80%;height: 15px;float: left;text-align: left;line-height: 1px">
+                                &nbsp; <span class="star-rating small_newsfeed">
+                                  <% 1.upto(5) do |i| %>
+                                    <% if i == cafe.avg.round(0) %>
+                                      <i class="on"></i>
+                                    <% else %>
+                                      <i></i>
+                                    <% end %>
+                                  <% end %>
+                                </span> 
+                                <small> &nbsp; <%=cafe.avg.round(1)%> 점</small>
+                              </div>
+                            </div>
+                            </div>
+                            <hr style="margin:0px">
+                            <div style="width:100%;height:31px;text-align: left;display: table;">
+                              <div style="display: table-cell;vertical-align: middle;font-size: 11px;padding-top: 10px; padding-left: 10px;padding-right: 10px;color: #b0b0b0">
+                                <span>#<%= Tag.where(:cafe_id => cafe.id)[3].content %></span>
+                                <span>#<%= Tag.where(:cafe_id => cafe.id)[4].content %></span>
+                                <span>#<%= Tag.where(:cafe_id => cafe.id)[5].content %></span>
+                              </div>
+                            </div>
+                          </div>
+                      </a>  
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+    </div>
+    
+    <!--구글 맵-->
+    <div class="col-md-5" style="padding:0px;" >
+      <div id="map_canvas" style="min-height:800px; min-width:555px;">map div</div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  var elem = document.querySelector('.grid');
+  var msnry = new Masonry( elem, {
+    // options
+    itemSelector: '.grid-item',
+    percentPosition: true,
+    columnWidth: 242,
+    fitWidth: true
+  });
+  $('.grid').imagesLoaded().progress( function() {
+    $('.grid').masonry();
+  });
+</script>

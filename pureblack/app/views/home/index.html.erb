@@ -1,0 +1,52 @@
+<div class="container-fluid">
+  <div class="row" id="fullscreen-wrap" style="width:107%">
+    <div class="embed-responsive embed-responsive-16by9">
+      <div class="row home-introduction-sentence">
+        <div class="col-md-8 col-md-offset-2">
+          <h2><span>Find Your Specialty</span></h2>
+          <div><span>1000개이상의 스페셜티 카페를 찾아보세요.</span></div><br><br>
+          <form action="/cafe/cafesearch" method="GET">
+          <div style="margin:0 auto;" class="input-group input-group-lg col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-6 col-xs-offset-3">
+            <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+            <input type="text" class="form-control" placeholder="오늘은 어디서 커피를 드시겠어요?" style="color:#fff;padding:5px;width:99%;text-align:center;background:rgba(0,0,0,.13);" name="searchword">
+            <span class="input-group-btn">
+              <button class="btn btn-danger" type="submit" >
+                <span class="glyphicon glyphicon-search"></span>
+              </button>
+            </span>
+          </div>
+        </form>
+        </div>
+      </div>
+      <iframe class="embed-responsive-item" src="//www.youtube.com/embed/zro0mJ9V7ZQ?autoplay=1&controls=0&showinfo=0&autohide=1&loop=1&playlist=lG5aSZBAuPs&wmode=transparent" autoscreen></iframe>
+    </div>
+  </div>
+</div>
+<script>  
+   $(document).ready(function(){       
+      var mq = window.matchMedia( "(min-width: 768px)" );
+      var scroll_start = 0;
+      var startchange = $('#startchange');
+      var offset = startchange.offset();
+      if (startchange.length){
+         if (mq.matches) { // window width is at least 500px
+            $(document).scroll(function() { 
+               scroll_start = $(this).scrollTop();
+               if(scroll_start > offset.top) {
+                  $(".navbar-default").css('background-color', '#333');
+               } else {                
+                  $('.navbar-default').css('background-color', 'transparent');                    
+               }
+            });   
+         }
+         else {// window width is less than 500px
+            $(".navbar-default").css('background-color', '#333');
+         }
+      }
+   });
+</script>
+<style>
+input::-webkit-input-placeholder {
+color:  #fff!important;
+}
+</style>

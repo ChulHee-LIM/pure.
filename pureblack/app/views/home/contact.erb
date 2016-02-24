@@ -1,0 +1,89 @@
+<script type="text/javascript">
+$(document).ready(function(){
+    var marker;
+    var mapOptions = {
+        center: new google.maps.LatLng(35.884910, 128.614572),
+        zoom:17,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+
+    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    function setMarker(){
+    marker = new google.maps.Marker({
+    map:map,
+    position:new google.maps.LatLng(35.884910, 128.614572),
+    });
+    infowindow = new google.maps.InfoWindow({});
+  }
+  setMarker();
+    google.maps.event.addListener(marker, 'click', function() {
+      
+      map.setCenter(marker.getPosition());
+  });
+});
+  
+</script>
+<!-- Javascript for Google Map END!!!!-->
+<div class="row" style="margin-top: 5%;">
+  <div class="col-md-8 col-md-offset-2">
+     <center>
+     <h1>Contact Us</h1>
+     </center>
+  </div>
+</div>
+  <div class="container" style="margin-bottom: 20px;">  
+    <center>
+    <div class="col-md-6 col-md-offset-2" id="map" style="width:400px;height:400px; margin-top:3%"></div>
+    
+    <div class="container col-md-4" style="margin-top:5%; position:center; ">
+        <i class="fa fa-2x">ifnill</i><br><br>
+        <p><strong>Adress:</strong></p>
+        <p>대구 동구 신암동 705-42 2층</p>
+        <p><strong>Email:</strong></p>
+        <p>ceo@ifnill.com</p>
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target='#contact_process'><i class="fa fa-envelope-o">_매일보내기</i></button>
+        <p><strong>Tel:</strong></p>
+        <p> +82 10-3618-4864</p><br><br>
+    </div>
+    </center>
+  </div>  
+  
+
+
+<!-- Modal -->
+<div id="contact_process" class="modal fade" role="dialog">
+  <div class="modal-dialog" style="width:50%;left:27%;top:15%">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Contact us.</h4>
+      </div>
+      <div class="modal-body">
+        <form action="/home/contact_process" method="POST">
+            <label for="exampleInputText">이메일</label>
+            <input type="text" class="form-control" name="address_mail"><br>
+            <label for="exampleInputText">제목</label>
+            <input type="text" class="form-control" name="titile_mail" ><br>
+            <label for="exampleInputText">내용</label>
+            <textarea class="form-control" name= "content_mail" style="resize:none" rows="15"></textarea>
+            <button type="submit" style="display:none" class="btn btn-default">보내기</button>        
+        </form>
+      </div>
+      <div class="modal-footer" style="border-top:none">
+        <i style="float:right;font-size:25px;cursor:pointer" class="fa fa-check"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+  $('.fa-check').click(function(e){
+    e.preventDefault();
+    $('.btn').click();
+  })
+});
+</script>

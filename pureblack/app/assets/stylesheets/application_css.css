@@ -1,0 +1,65 @@
+.subfooter {
+	background-color: #fafafa;
+	border-top: 1px solid #f3f3f3;
+	border-bottom: 1px solid #f3f3f3;
+	padding: 40px 0;
+}
+
+.section {
+	background-color: #222222;
+	color:white;
+	padding: 80px 0;
+}
+
+.default-bg blockquote footer,
+.translucent-bg blockquote footer {
+	color: #cccccc;
+}
+
+.subfooter p {
+	margin-bottom: 0;
+}
+
+/* ==============================
+   Portfolio
+   ============================== */
+
+#portfolio + .small-section{
+	margin-top: -110px;
+}
+
+
+#news + .small-section{
+    margin-top: -140px;
+}
+
+
+/* alert CSS */
+
+.alert {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.alert-alert {
+  background-color: #f2dede;
+  border-color: #eed3d7;
+  color: #b94a48;
+}
+.alert-alert hr {
+  border-top-color: #e6c1c7;
+}
+.alert-alert .alert-link {
+  color: #953b39;
+}
+.alert-notice {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  color: #468847;
+}
+.alert-notice hr {
+  border-top-color: #c9e2b3;
+}
+.alert-notice .alert-link {
+  color: #356635;
+}

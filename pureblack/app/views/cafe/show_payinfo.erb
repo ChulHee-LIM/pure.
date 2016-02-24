@@ -1,0 +1,23 @@
+<div class ="container" style="text-align:center">
+	<div class ="row">
+		<h1>모든 결제 내역</h1>
+		<% @user.payinfos.each do |p| %>
+		<h6>결제수단 : <%= p.pay_method %></h6>
+		<h6>merchant_uid : <%= p.merchant_uid %></h6>
+		<h6>주문명 : <%= p.name %></h6>
+		<h6>결제된 금액 : <%= p.paid_amount %></h6>
+		<h6>PG사 이름 : <%= p.pg_provider %></h6>
+		<h6>PG사 승인번호 : <%= p.pg_tid %></h6>
+		<h6>카드사 승인번호(신용카드 결제일 때만 있음) : <%= p.apply_num %></h6>
+		<h6>가상계좌 입금계좌번호(가상계좌 결제일 때만 있음) : <%= p.vbank_num %></h6>
+		<h6>가상계좌 은행명(가상계좌 결제일 때만 있음) : <%= p.vbank_date %></h6>
+		<h6>가상계좌 예금주(가상계좌 결제일 때만 있음) : <%= p.vbank_name %></h6>
+		<h6>가상계좌 입금기한(가상계좌 결제일 때만 있음) : <%= p.vbank_holder %></h6>
+		<h6>user_id : <%= p.user_id %></h6>
+		<h6>cafe_id : <%= p.cafe_id %></h6>
+		<h6>paid_at : <%= p.paid_at %></h6>
+		<h6>pay_status : <%= p.pay_status %></h6>
+		<h6>---------------------------------------------------------</h6>
+		<% end %>
+	</div>
+</div>

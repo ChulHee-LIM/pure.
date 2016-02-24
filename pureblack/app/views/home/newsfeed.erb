@@ -1,0 +1,1002 @@
+<div style="padding-top:70px; padding-left: 20px; padding-right: 20px; background-color: #f5f5f5;">
+  <div class="grid" style="margin: 0 auto">
+    <div class="grid-item" style="position: absolute; left: 0%; top: 0px;">
+      <div class="panel-bottom">
+        <div class="panel panel-default" style="border-radius:10px;">
+          <div class="panel-body panel-img"style="padding:0;">
+            <div id='a' style="text-align:center">
+              <img src="<%=image_url('friend.jpg')%>" style="width: 100%;height: auto;padding: 0px;margin: 0px;border-top-left-radius: 9px;border-top-right-radius: 9px;">
+              <br><br>
+              <button type="button" id="clickme"class="btn btn-default mybutton" style="width:90%"><b>가입한 친구 찾기</b><i style="float:right;transform:translateY(20%)" class="fa fa-chevron-right"></i></button>
+              <br>
+              &nbsp;
+            </div>
+              <div id="myDiv" style="display:none; text-align:center; min-height:308px">
+                <form action="/home/usersearch" method="GET">
+                  <br><b>친구를 검색해 보세요!</b><br><br><br><br>
+                  <center>
+                  <div class="ui-widget"></div>
+                  <input placeholder="친구를 검색해 보세요!" name="user_search" id="user_search" type="string" style="width:90%" class="form-control">
+                  </center><br>
+                  <button type="submit" id='search'style="width:90%" class="btn btn-danger search">search</button>
+                </form>
+              </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+    <% @total_result.each do |total|%>
+      <% if total.class.name == 'Cafe' %>
+        <div class="grid-item">
+          <div class="panel-bottom">
+            <div class="panel panel-default" style="border-radius:10px;">
+              <div class="panel-body panel-img" style="padding:0;">
+                <a href="/cafe/cafedetail?hash=<%=total.cafehash%>" style="decoration:none;color:black;">
+                  <img src='<%=total.image.thumb.url%>' alt="<%=total.name%>" style="width:100%;height:auto;padding: 0px;margin: 0px;border-top-left-radius: 9px;border-top-right-radius: 9px;" address="<%=total.address%>">
+                </a>
+                <div style="padding:10px;">
+                  <div style="width:100%;height:54px;text-align: left;display: table;">
+                    <div style="display: table-cell;vertical-align: middle;font-size: 11px;padding-left: 10px;padding-right: 10px">
+                      <%= total.introduction %>
+                    </div>
+                  </div>
+                  <hr style="margin:0px">
+                  <div style="width:100%;height:50px;padding: 10px;display:table;text-align:center">
+                    <a href="/cafe/cafedetail?hash=<%=total.cafehash%>" style="decoration:none;color:black;">
+                      <img src="<%=total.thumnail.url %>" style="width:30px; height:30px; float:left; padding: 0px;border: 1px solid #e6e6e6;" alt="..." class="img-circle">
+                    </a>
+                    <div style="width:100%;display:table-cell;vertical-align: middle;padding-left:5px">
+                      <div style="width:100%;height: 15px;float: left;">
+                        <a href="/cafe/cafedetail?hash=<%=total.cafehash%>" style="decoration:none;color:black;">
+                          <p style="font-weight:bold; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;color: #555; margin: 0px;text-align: left;font-size:11px">
+                            <%=total.name%>
+                          </p>
+                          <br>
+                        </a>  
+                      </div>
+                      <div style="width:100%;height: 15px;float: left;text-align: left;line-height: 1px">
+                        <span class="star-rating small_newsfeed">
+                          <% 1.upto(5) do |i| %>
+                            <% if i == total.avg.round(0) %>
+                              <i class="on"></i>
+                            <% else %>
+                              <i></i>
+                            <% end %>
+                          <% end %>
+                        </span> 
+                        <small><%=total.avg.round(1)%> 점 (<%=total.posts.where.not(:user_id=>total.user_id).count%> 명)</small>
+                      </div>
+                    </div>
+                  </div>
+                  <hr style="margin:0px">
+                  <div style="width:100%;height:31px;text-align: left;display: table;">
+                    <div style="display: table-cell;vertical-align: middle;font-size: 11px;padding-top: 10px; padding-left: 10px;padding-right: 10px;color: #b0b0b0">
+                      <span>#<%= Tag.where(:cafe_id => total.id)[3].content %></span>
+                      <span>#<%= Tag.where(:cafe_id => total.id)[4].content %></span>
+                      <span>#<%= Tag.where(:cafe_id => total.id)[5].content %></span>
+                    </div>
+                  </div>
+                </div>
+              </div> 
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <div class="grid-item">
+          <div class="panel-bottom">
+            <div class="panel panel-default" style="border-radius:10px;">
+              <div class="panel-body panel-img" style="padding:0">
+                <div class="image_slider" data-toggle="modal" data-target="#myModal"data-value="<%=total.id%>">
+                  <img src='<%=total.image.thumb.url%>' style="cursor: pointer; width:100%;height:auto;padding: 0px;margin: 0px;border-top-left-radius: 9px;border-top-right-radius: 9px;" address="<%=total.address%>">
+                </div>
+                <div style="padding:10px;">
+                  <div style="width:100%;height:54px;text-align: left;display: table;">
+                    <div style="display: table-cell;vertical-align: middle;font-size: 11px;padding-left: 10px;padding-right: 10px">
+                      <%= total.content %>
+                    </div>
+                  </div>  
+                  <div style="width:100%;height:20px;text-align: left;display: table;">
+                    <div class = "like_count" style="display: table-cell;vertical-align: middle;font-size: 11px;padding-left: 10px;padding-right: 10px">
+                      <i id = "like_list_card_button_<%= total.id %>" data-toggle="modal" data-target="#like_list" class="fa fa-heart">&nbsp;<span id="like_count_card_<%= total.id %>"><%=total.likes.count %></span></i>
+                    </div>
+                  </div>                  
+                  <hr style="margin:0px">
+                  <div style="width:100%;height:50px;padding: 10px;display:table;text-align:center">
+                    <% if total.user.image? %>
+                      <img src="<%= total.user.image %>" style="width:30px; height:30px; float:left; padding: 0px;border: 1px solid #e6e6e6;" alt="..." class="img-circle">
+                    <% else %>
+                      <img src="<%= image_url('profile_default.jpg') %>" style="width:30px; height:30px; float:left; padding: 0px;border: 1px solid #e6e6e6;" alt="..." class="img-circle">
+                    <% end %>
+                    <div style="width:100%;display:table-cell;vertical-align: middle;padding-left:5px">
+                      <div style="width:100%;height: 15px;float: left;">
+                        <a href="/home/profile/<%=total.user.user_hash%>" style="decoration:none;color:black;">
+                          <p style="font-weight:bold; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;color: #555; margin: 0px;text-align: left;font-size:10px;">
+                            <%=total.user.name%>
+                          </p>
+                          <br>
+                        </a>  
+                      </div>
+                      <div style="width:100%;height: 15px;float: left;text-align: left;line-height: 1px">
+                        <p style="font-weight:bold; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;color: #555; margin: 0px;text-align: left;font-size:8px; color:#b0b0b0 ">
+                          <%=total.address%>에서
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <hr style="margin:0px">
+                  <div style="width:100%;height:31px;text-align: left;display: table;">
+                    <div style="display: table-cell;vertical-align: middle;font-size: 11px;padding-top: 10px; padding-left: 10px;padding-right: 10px;color: #b0b0b0">
+                      <% total.tags.each do |tag| %>
+                        <span>#<%= tag.content %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>                
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 포스트 클릭시 띄우는 모달 -->
+        
+        <div class="col-md-12" id="window" data-value="<%=total.id%>" style="display: none;">
+          <div class="row">
+            <div id="imagewindow">
+              <div class="row">
+                <div class="leftbutton-container col-md-2 col-sm-2 col-xs-3">
+                  
+                </div>
+                <div class="modalimage-container col-md-8 col-sm-8 col-xs-6" align="center">
+                  <div>
+                      <img class="imagecontainer slide-image img-rounded" id ="showImage" src="<%=total.image.thumb.url%>" alt="">
+                  </div>
+                </div>
+                <div class="rightbutton-container col-md-2 col-sm-2 col-xs-3">
+                  
+                </div>
+              </div>
+            </div>
+            <div id="contentwindow">
+              <div class ="row">
+                <div class="post_userinfo-container">
+                  <div>
+                    <% if User.where(:id=>total.user_id).take.image? %>
+                      <img src='<%=User.where(:id=>total.user_id).take.image.url %>' class="img-circle">
+                    <% else %>
+                      <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                    <% end %>
+                  </div>
+                  <a href="/home/profile/<%=total.user.user_hash%>" style="decoration:none;color:black;">
+                    <span class="postinfo-username"><%=User.where(:id=>total.user_id).take.name%></span>
+                  </a>
+                  
+                  
+                  <% unless current_user.nil? %>
+                    <% if current_user == @access_to_user || current_user.id == 1 %>
+                      <a class="postinfo-delete" href="/cafe/delete_post/<%=total.id%>"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="해당 게시물을 삭제하시면 관련된 모든 댓글이 삭제됩니다."></span></a>
+                    <% else %>                      
+                      <button type="submit" id="feed_unfollow_<%=total.id%>" class="btn btn-default" style="color:#fff;border-color:#00acf1;background-color:#00acf1; float:right">팔로잉</button>       
+                      <button type="submit" id="feed_follow_<%=total.id%>" class="btn btn-default" style="border-color:#00acf1; color:#00acf1; float:right">팔로우</button>                      
+                    <% end %>
+                  <% end %>
+                  <br><span class="star-rating small">
+                    <% 1.upto(5) do |i| %>
+                      <% if i == total.score %>
+                        <i class="on"></i>
+                      <% else %>
+                        <i></i>
+                      <% end %>
+                    <% end %>
+                  </span>
+                </div>
+              </div>
+              <hr class="featurette-divider post_divider">
+              <div class="row post_reply_container">
+                <div id="reply_div" data-value="<%=total.id%>">
+                  <div class="row" id="replyblock" data-value="<%=total.id%>">
+                    <div class="col-md-12" style="margin-bottom:10px">
+                      <a id = "like_list_button_<%= total.id %>" style="cursor: pointer" data-toggle="modal" data-target="#like_list">좋아요 <span id="like_count_<%= total.id %>" ><%=total.likes.count%></span>개</a>
+                      <span style="float:right"><b><%=total.address%></b>에서</span>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-3" id="replyimage">
+                      <% if User.where(:id=>total.user_id).take.image? %>
+                        <img src='<%=User.where(:id=>total.user_id).take.image.url %>' class="img-circle">
+                      <% else %>
+                       <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                      <% end %>
+                    </div>
+                    <div class="col-md-9 col-sm-9 col-xs-9" id="reply_contents" data-value="<%=total.id%>">
+                      <div class="row">
+                        <div id="reply_username_content_time1">
+                          <a id="replyname" href="/home/profile/<%=total.user.user_hash%>"><%=User.where(:id=>total.user_id).take.name%></a>
+                          <span id="replycontent"><%= total.content %></span>
+                          <% total.tags.each do |tag| %>
+                            <span class="post_tag_content">
+                              #<%=tag.content%>
+                            </span>
+                          <% end %>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div id="reply_username_content_time2">
+                          <span><%=total.writtentime.strftime('%Y-%m-%d %H:%M:%S')%></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% total.replies.each do |r| %>
+                    <div class="row" id="replyblock" data-value="<%=r.id%>">
+                      <div class="col-md-3 col-sm-3 col-xs-3" id="replyimage">
+                        <% if r.user.image? %>
+                          <img src='<%=r.user.image.url%>' class="img-circle">
+                        <% else %>
+                         <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                        <% end %>
+                      </div>
+                      <div class="col-md-9 col-sm-9 col-xs-9" id="reply_contents" data-value="<%=r.id%>">
+                        <div class="row">
+                          <div id="reply_username_content_time1">
+                            <a id="replyname" href="/home/profile/<%=r.user.user_hash%>"><%=r.user.name%></a>
+                            <span id="replycontent"><%= r.content %></span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div id="reply_username_content_time2">
+                            <span><%=r.writtentime.strftime('%Y-%m-%d %H:%M:%S')%></span>
+                            <% unless current_user.nil? %>
+                              <% if current_user.id == r.user_id %>
+                                <a onclick="edit_reply(<%=r.id%>)" data-value="<%=r.id%>" class="reply_edit">수정</a>
+                                <a onclick="del_reply(<%=r.id%>)" data-value="<%=r.id%>" class="reply_delete">삭제</a>
+                              <% end %>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <hr class="featurette-divider post_divider reply_input_divider">
+              <div class="row post_writereply_container">
+                <div>
+                  <div class="post_writereply_userimage col-md-2 col-sm-2 col-xs-2">
+                    <i id = "like_button_<%= total.id %>" class="fa fa-heart-o fa-2x"></i>
+                  </div>
+                  <div class="post_writereply_content col-md-10 col-sm-10 col-xs-10">
+                    <textarea class="textarea-box img-rounded reply" cols="100" rows="1" placeholder="Write your reply.." data-value="<%=total.id%>"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 모달 끝 -->
+      <% end %>
+      
+    <% end %>  
+  </div>
+  <!-- 이미지 슬라이드 모달 닫는 버튼 -->
+  <div id="myModal" class="modal fade" role="dialog" name="modal_window">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <!-- 닫는버튼 끝 -->
+  <div class ="col-md-12" style = "text-align: center; background-color: #f5f5f5;">
+    <img id = "load_more" style = "margin: 50px auto; width: 30px; height:30px; display: none;" src="<%= image_url('spinner.gif') %>">
+  </div>  
+</div>
+<%= paginate @total_result %>
+<script type="text/javascript">
+$(function(){
+  $('.mybutton').click(function(){
+    var effect = 'slide';
+    var options = { direction: 'right'};
+    var duration = 500;
+    $('#a').hide();
+    $('#myDiv').toggle(effect, options, duration);
+  })
+});
+</script>
+<script type="text/javascript">
+  $(function() {
+    var availableTags = [];
+    <% @users.each do |x| %>
+      availableTags.push({label:'<%=x.name%> - <%=x.email%>', value:'<%=x.name%>'});
+    <% end %>
+    $( "#user_search" ).autocomplete({
+      source: availableTags
+    });
+  });
+  </script>
+<!-- 태그 선택 모달 -->
+<%if current_user.nil? %>
+<% else %>
+  	<% if current_user.tags[0].nil? %>
+  		<div class="ModalManager Module" id="select_modal" >
+            <div class="Modal Module undefined male absoluteCenter show">
+                <div class="modalMask dark show"></div>
+                <div class="modalScroller">
+                    <div class="modalContainer show">
+                        <span class="positionModuleCaret"></span>
+                        <div class="modalContent">
+                            <div class="modalModule">            
+                                <div class="Module NuxModalInterestPicker NuxModalStepBase brio inModal">
+                                    <div class="contentWrapper">
+                                        <div class="headerContent">
+                                            <h2 class="headerTitle">5개 이상 관심태그를 팔로우하세요.</h2>
+                                            <h3 class="headerSubTitle">이제 맞춤 홈피드가 만들어 집니다.</h3>
+                                        </div>        
+                                        <div class="searchWrapper">  
+                                            <em class="searchIcon"></em>
+                                            <input class="Input Module search" placeholder="모든 태그 찾기" type="text" id="autocomplete">
+                                            <a class="clearSearch">
+                                                <em class></em>
+                                            </a>        
+                                        </div>
+                                        <div class="noResults hidden"></div>
+                                        <div class="gridWrapper">
+                                            <div class="Grid Module">
+                                                <div class="GridItems Module centeredWithinWrapper fixedHeightLayout padItems" id="taglist">
+                                                    <div id="searching_list" class="Searching_list">
+                                                    </div>
+                                                    <div>   
+                                                        <% @tags.each do |tag| %>                                            
+                                                            <button class="btn btn-taglist <%= tag.id %>" id ="<%= tag.id %>">#<%= tag.content %></button>   
+                                                        <% end %>
+                                                    </div>
+                                                    
+                                                </div>        
+                                            </div>   
+                                        </div>
+                                        <div class="footer">
+                                            <div class="buttonWrapper" id="complete_btn">
+                                                <button class="Button Module btn hasText  nuxModalPickerInterestButton primary rounded"
+                                                type="button" id="submit">
+                                                    <span>완료</span>
+                                                </button>        
+                                            </div>
+                                            <div class="buttonWrapper" id="incomplete_btn">
+                                                <div class="Button Module btn hasText  nuxModalPickerInterestButton primary disabled" disabled="disabled">
+                                                    <span id="how_many"></span>
+                                                </div>    
+
+                                            </div>    
+                                        </div>   
+                                    </div>   
+                                </div>       
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% end %>
+<% end %>    
+<!-- 끝 -->
+
+<!-- 포스트 클릭시 띄우는 모달 -->
+<% @total_result.each do |total|%>
+  <% unless total.class.name == 'Cafe' %>
+    <div class="col-md-12" id="window" data-value="<%=total.id%>" style="display: none;">
+      <div class="row">
+        <div id="imagewindow">
+          <div class="row">
+            <div class="leftbutton-container col-md-2 col-sm-2 col-xs-3">
+              
+            </div>
+            <div class="modalimage-container col-md-8 col-sm-8 col-xs-6" align="center">
+              <div>
+                  <img class="imagecontainer slide-image img-rounded" id ="showImage" src="<%=total.image.thumb.url%>" alt="">
+              </div>
+            </div>
+            <div class="rightbutton-container col-md-2 col-sm-2 col-xs-3">
+              
+            </div>
+          </div>
+        </div>
+        <div id="contentwindow">
+          <div class ="row">
+            <div class="post_userinfo-container">
+              <div>
+                <% if User.where(:id=>total.user_id).take.image? %>
+                  <img src='<%=User.where(:id=>total.user_id).take.image.url %>' class="img-circle">
+                <% else %>
+                 <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                <% end %>
+              </div>
+              <a href="/home/profile/<%=total.user.user_hash%>" style="decoration:none;color:black;">
+                <span class="postinfo-username"><%=User.where(:id=>total.user_id).take.name%></span>
+              </a>                  
+              <i id = "like_button_<%= total.id %>" class="fa fa-heart-o"></i>
+              <a id = "like_list_button_<%= total.id %>" style="cursor: pointer" data-toggle="modal" data-target="#like_list">좋아요 <span id="like_count_<%= total.id %>" ><%=total.likes.count%></span>개</a>
+              <% unless current_user.nil? %>
+                <% if current_user == @access_to_user || current_user.id == 1 %>
+                  <a class="postinfo-delete" href="/cafe/delete_post/<%=total.id%>"><span class="glyphicon glyphicon-trash" aria-hidden="true" title="해당 게시물을 삭제하시면 관련된 모든 댓글이 삭제됩니다."></span></a>
+                <% else %>                      
+                  <% if current_user.following?(total.user) %>
+                    <a href="/home/unfollow_user/<%=total.user.id%>" style="float:right">
+                      <button type="submit" class="btn btn-default" style="color:#fff;border-color:#00acf1;background-color:#00acf1">팔로잉</button>
+                    </a>
+                  <% else %>
+                    <a href="/home/follow_user/<%=total.user.id%>" style="float:right">
+                      <button type="submit" class="btn btn-default" style="border-color:#00acf1; color:#00acf1">팔로우</button>
+                      </a>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <br><span class="star-rating small">
+                <% 1.upto(5) do |i| %>
+                  <% if i == total.score %>
+                    <i class="on"></i>
+                  <% else %>
+                    <i></i>
+                  <% end %>
+                <% end %>
+              </span>
+            </div>
+
+            <div class="post_info_container">
+              <div>
+                <div class="post_writtentime_container newsfeed_paddingleft" style="text-align:left">
+                    <span><%=total.address%>에서</span>
+                    <span style="float:right"><%=total.writtentime.strftime('%Y-%m-%d %H:%M:%S')%></span>
+                </div>
+                <div class="newsfeed_paddingleft" style="text-align:left">
+                  <% total.tags.each do |tag| %>
+                    <span class="post_tag_content">
+                      #<%=tag.content%>
+                    </span>
+                  <% end %>
+                  <span><%=total.content%></span> 
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr class="featurette-divider post_divider">
+          <div class="row post_reply_container">
+            <div id="reply_div" data-value="<%=total.id%>">
+              <% total.replies.each do |r| %>
+                <div class="row" id="replyblock" data-value="<%=r.id%>">
+                  <div class="col-md-3 col-sm-3 col-xs-3" id="replyimage">
+                    <% if r.user.image? %>
+                      <img src='<%=r.user.image.url%>' class="img-circle">
+                    <% else %>
+                     <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                    <% end %>
+                  </div>
+                  <div class="col-md-9 col-sm-9 col-xs-9" id="reply_contents" data-value="<%=r.id%>">
+                    <div class="row">
+                      <div id="reply_username_content_time1">
+                        <a id="replyname"><%=r.user.name%></a>
+                        <span id="replycontent"><%= r.content %></span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div id="reply_username_content_time2">
+                        <span><%=r.writtentime.strftime('%Y-%m-%d %H:%M:%S')%></span>
+                        <% unless current_user.nil? %>
+                          <% if current_user.id == r.user_id %>
+                            <a onclick="edit_reply(<%=r.id%>)" data-value="<%=r.id%>" class="reply_edit">수정</a>
+                            <a onclick="del_reply(<%=r.id%>)" data-value="<%=r.id%>" class="reply_delete">삭제</a>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <hr class="featurette-divider post_divider">
+          <div class="row post_writereply_container">
+            <div>
+              <div class="post_writereply_userimage col-md-2 col-sm-2 col-xs-2">
+                <% unless current_user.nil? %>
+                  <% if current_user.image? %>
+                    <img src='<%=current_user.image.url%>' class="img-circle">
+                  <% else %>
+                   <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                  <% end %>
+                <% else %>
+                  <img src='<%= image_url('profile_default.jpg') %>' class ="img-circle">
+                <% end %>
+              </div>
+              <div class="post_writereply_content col-md-10 col-sm-10 col-xs-10">
+                <textarea class="textarea-box img-rounded reply" cols="100" rows="1" placeholder="Write your reply" data-value="<%=total.id%>"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+<!-- 모달 끝 -->
+<!-- Modal for LikeList -->
+<div id="like_list" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog_like_list" style="width:20%; height:50%">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="like_list_close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">좋아요</h4>
+      </div>
+      <div class="modal-body" id="likelist_modal_name">
+               
+      </div>
+      <div class="modal-footer" style="border-style:none">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END -->
+<!-- 태그 모달 관련 스크립트 -->
+<script>
+$(document).ready(function(){  
+var count = 0;
+ $('#taglist').on('click','.btn-taglist',function(){
+    
+    
+     
+
+     if ($(this).hasClass("btn-selected"))
+     {--count;
+     console.log(""+count);}   
+     else
+     {++count;
+     console.log(""+count);}
+     $("."+$(this).attr('id')).toggleClass('btn-selected');
+        
+    if (count>=5)
+    {$('#complete_btn').show();
+    $('#incomplete_btn').show();}
+ else
+    {$('#complete_btn').hide();
+    $('#incomplete_btn').show();
+    $('#how_many').html(""+count+"개 선택하셨습니다.")
+            }    
+
+
+ })
+})
+</script>
+
+
+
+
+<script>
+ var selected_ids = new Array();
+ $('#submit').click(function(){
+    $(".btn-selected").each(function(){
+    selected_ids.push($(this).attr('id'));
+    });
+  
+ $.ajax({
+       url: "/home/addtag",
+       method: "POST",
+       data: { "selected_ids" : selected_ids},
+        success: function(){
+        
+         }
+        
+     });
+ location.href ="/home/newsfeed"
+ // ('#select_modal').remove();
+ })
+
+</script>
+
+<script>             
+  $(function() {
+  var timer;
+  $("#autocomplete").keyup(function() {
+    clearTimeout(timer);
+    var ms = 1000; // milliseconds
+    var val = this.value;
+    timer = setTimeout(function() {
+              
+      $.ajax({
+            url: "/home/searching",
+            data: {keyword: val},
+            success:function(json){ 
+                      var json_data = $.parseJSON(json);
+                  // $('#searching_list').remove(); 
+                    $('#searching_list').html(""+json_data.length+"개의 검색결과입니다<br>");
+                      for(var i = 0 ; i < json_data.length ; i++)                      
+                
+                {  
+                  $('#searching_list').append('<button class="btn btn-taglist '+json_data[i].id+' " id= '+json_data[i].id+'>#'+json_data[i].content+'</button>');}
+                      
+                      
+           } 
+          });      
+}, ms);
+  });
+});
+</script>
+<!-- 끝 -->
+<script type="text/javascript">
+  var elem = document.querySelector('.grid');
+  var msnry = new Masonry( elem, {
+    // options
+    itemSelector: '.grid-item',
+    percentPosition: true,
+    columnWidth: 246,
+    fitWidth: true
+  });
+  $('.grid').imagesLoaded().progress( function() {
+    $('.grid').masonry();
+  });
+</script>
+
+<script type="text/javascript">
+$(function(){
+  if ($('.pagination').length) {
+    $(window).scroll(function() {
+      var url = $('.pagination .next a').attr('href');
+      if ($(document).height() != $(window).height())
+      {
+        if (url && $(window).scrollTop() > $(document).height() - $(window).height()-1) {
+          // $('.pagination').show();
+          // $('.pagination').text("Please Wait...");scrollHeight
+          // alert("document height : "+ $(document).height() + " windows height : " + $(window).height() + " scorllTop : " + $(window).scrollTop()+" url : "+url);
+          return $.getScript(url);
+        }
+      }
+    });
+    return $(window).scroll();
+  }
+})
+</script>
+
+<!-- JAvascript for delete Reply -->
+<script type="text/javascript">
+  function del_reply(id) {
+    var replyblocks = document.querySelectorAll("#replyblock");
+    for(var i =0; i<replyblocks.length;i++){
+      if(id==replyblocks[i].getAttribute('data-value')){
+       replyblocks[i].setAttribute('style','display:none');
+        $.ajax({
+          data: {reply_id: id},
+          url: "/cafe/delete_reply"
+        });
+      }
+    }
+  }
+</script>
+<!-- Javascript for delete Reply End -->
+<!-- Javascript for edit Reply -->
+<script type="text/javascript">
+  function edit_reply(id){
+    var replyblocks = document.querySelectorAll("#replyblock");
+    var reply_contents = document.querySelectorAll("#reply_contents");
+    var content = document.querySelectorAll("#replycontent");
+    var reply_submit = document.querySelectorAll('.reply_edit');
+    var reply_cancel = document.querySelectorAll('.reply_delete');
+    var time_span = document.querySelectorAll('#reply_username_content_time2 > span');
+    var i = 0;
+    var j = 0;
+    var k = 0;
+    while(id != replyblocks[i].getAttribute('data-value')){
+      i++;
+    }
+    while(id != reply_submit[j].getAttribute('data-value')){
+      j++;
+    }
+    reply_submit[j].textContent=" "+"완료";
+    reply_cancel[j].textContent=" "+"취소";
+    time_span[i].setAttribute('data-value',id);
+    var edit_textarea = document.createElement('textarea');
+    edit_textarea.className ='textarea-box img-rounded e_reply';
+    edit_textarea.setAttribute('cols',100);
+    edit_textarea.setAttribute('rows',1);
+    edit_textarea.setAttribute('style','margin-left:0px');
+    edit_textarea.setAttribute('data-value',id);
+    edit_textarea.textContent=content[i].innerText;
+    var added_reply_content_div = document.createElement('div');
+    added_reply_content_div.className="col-md-9 col-sm-9 col-xs-9";
+    added_reply_content_div.id='reply_contents';
+    added_reply_content_div.setAttribute('data-value',id);
+    added_reply_content_div.setAttribute('style','padding-left:0');
+    added_reply_content_div.appendChild(edit_textarea);
+    replyblocks[i].appendChild(added_reply_content_div);
+    reply_submit[j].onclick=function(){
+      var e_reply = document.querySelectorAll(".e_reply");
+      while(id!=e_reply[k].getAttribute('data-value')){
+        k++;
+      }
+      var reply = e_reply[k].value;
+      $.ajax({
+        data:{reply: reply,
+              reply_id: id},
+        url:'/cafe/edit_reply',
+        success:function(json){
+          var json_data = $.parseJSON(json);
+          content[i].textContent=" "+reply;
+          time_span[i].textContent=json_data.writtentime;
+          added_reply_content_div.removeChild(edit_textarea);
+          replyblocks[i].removeChild(added_reply_content_div);
+          reply_submit[j].textContent=" "+"수정";
+          reply_cancel[j].textContent=" "+"삭제";
+          reply_cancel[j].onclick=function () {del_reply(id);};
+          reply_submit[j].onclick=function () {edit_reply(id);};
+        }
+      });
+    }
+    reply_cancel[j].onclick=function(){
+      added_reply_content_div.removeChild(edit_textarea);
+      replyblocks[i].removeChild(added_reply_content_div);
+      reply_submit[j].textContent=" "+"수정";
+      reply_cancel[j].textContent=" "+"삭제";
+      reply_cancel[j].onclick=function () {del_reply(id);};
+      reply_submit[j].onclick=function () {edit_reply(id);};  
+    }
+  }
+</script>
+<!-- Javascript for edit Reply End -->
+<!-- Javascript for Add Reply -->
+<script type="text/javascript">
+  $(document).ready(function(){
+    var reply_divs = document.querySelectorAll("#reply_div");
+    var index;
+    $(".reply").keypress(function(e){
+      if(e.which == 13){
+        <% if current_user.nil? %>
+          alert("로그인을 해야 댓글을 달 수 있습니다.");
+          window.location.href = "/users/sign_in/";
+        <% else %>
+          var reply = $(this).val();
+          var id = $(this).data("value");
+          for(var i =0; i<reply_divs.length;i++){
+            if(id==reply_divs[i].getAttribute('data-value')){
+              index = i;
+              $.ajax({
+                data: {reply: reply,
+                       post_id: id},
+                url: "/cafe/add_reply",
+                success: function(json){
+                  var txt = reply;
+                  var json_data = $.parseJSON(json);
+                  var added_reply_block_div = document.createElement('div');
+                  added_reply_block_div.className='row';
+                  added_reply_block_div.id='replyblock';
+                  added_reply_block_div.setAttribute('data-value',json_data.id);
+
+                  var added_reply_image_div = document.createElement('div');
+                  added_reply_image_div.className="col-md-3 col-sm-3 col-xs-3";
+                  added_reply_image_div.id='replyimage';
+
+                  var added_reply_content_div = document.createElement('div');
+                  added_reply_content_div.className="col-md-9 col-sm-9 col-xs-9";
+                  added_reply_content_div.id='reply_contents';
+                  added_reply_content_div.setAttribute('data-value',json_data.id);
+
+                  var image = document.createElement('img');
+                  image.className='img-circle';
+                  <% unless current_user.nil?%>
+                    <% if current_user.image? %>
+                      image.src = '<%=current_user.image.url %>';
+                    <% else %>
+                      image.src = '<%= image_url('profile_default.jpg') %>';
+                    <% end %>
+                  <% else %>
+                    image.src = '<%= image_url('profile_default.jpg') %>';
+                  <% end %>
+
+                  var rowdiv1 = document.createElement('div');
+                  rowdiv1.className = 'row';
+
+                  var added_reply_username_content_time1 = document.createElement('div');
+                  added_reply_username_content_time1.id='reply_username_content_time1';
+
+                  var added_reply_username_content_time2 = document.createElement('div');
+                  added_reply_username_content_time2.id='reply_username_content_time2';
+
+                  var a_tag = document.createElement('a');
+                  a_tag.id='replyname';
+                  <% unless current_user.nil? %>
+                    a_tag.text='<%=current_user.name%>';
+                  <% else %>
+                    a.tag.text='';
+                  <% end %>
+
+                  var rowdiv2 = document.createElement('div');
+                  rowdiv2.className='row';
+
+                  var span = document.createElement('span');
+                  span.id='replycontent';
+                  var time_span = document.createElement('span');
+                  var del_a = document.createElement('a');
+                  del_a.onclick=function () {del_reply(json_data.id);};  
+                  del_a.className='reply_delete';
+                  del_a.setAttribute('data-value',json_data.id);
+                  var edit_a = document.createElement('a');
+                  edit_a.onclick=function () {edit_reply(json_data.id);};
+                  edit_a.className='reply_edit';
+                  edit_a.setAttribute('data-value',json_data.id);
+
+                  added_reply_username_content_time1.appendChild(a_tag);
+                  added_reply_username_content_time1.appendChild(span).textContent=" "+txt;
+                  added_reply_username_content_time2.appendChild(time_span).textContent=json_data.writtentime;
+                  added_reply_username_content_time2.appendChild(edit_a).textContent=" "+"수정";
+                  added_reply_username_content_time2.appendChild(del_a).textContent=" "+"삭제";
+                  rowdiv1.appendChild(added_reply_username_content_time1);
+                  rowdiv2.appendChild(added_reply_username_content_time2);
+                  added_reply_image_div.appendChild(image);
+                  added_reply_content_div.appendChild(rowdiv1);
+                  added_reply_content_div.appendChild(rowdiv2);
+                  added_reply_block_div.appendChild(added_reply_image_div);
+                  added_reply_block_div.appendChild(added_reply_content_div);
+                  reply_divs[index].appendChild(added_reply_block_div);
+                  $(".reply").val("");
+                  $(".reply").focus();
+                  e.preventDefault();
+                }
+              });
+            }
+          }
+        <% end %>
+      }
+    });
+  });
+</script>
+<script type="text/javascript">
+  $(document).keyup(function(e){
+    if (e.keyCode == 27) {
+      // $('.like_list_close').click();
+      $('.close').click();
+    }
+  });
+</script>
+
+<script type="text/javascript">
+$(function(){
+  <% @post.each do |p| %>
+    var liked = <%= p.likes.where(:user_id => current_user.id).blank? %>
+    var like_count_first =  parseInt($("#like_count_<%= p.id %>").text())
+    if(like_count_first==0)
+    {
+      $("#like_list_button_<%= p.id %>").hide();
+      $("#like_list_card_button_<%= p.id %>").hide();
+    }
+    else
+    {
+      $("#like_list_button_<%= p.id %>").show();
+      $("#like_list_card_button_<%= p.id %>").show();
+    }
+        
+    if(!liked)
+    {
+      $("#like_button_"+<%= p.id %>).removeClass("fa-heart-o").addClass("fa-heart");
+    }
+    $("#like_button_"+<%= p.id %>).click(
+      function(){
+        var like_count =  parseInt($("#like_count_<%= p.id %>").text())
+        // var like_text =  $("#like_button_<%= p.id %>").text()      
+        
+        if($("#like_button_<%= p.id %>").hasClass('fa-heart-o'))
+        {
+          ++like_count
+          
+          $.ajax({
+            data: {
+                post_id: <%= p.id %>
+            },
+            url: "/home/like_save",
+            success: function(){
+              $("#like_count_"+<%= p.id %>).html(""+like_count);
+              $("#like_count_card_"+<%= p.id %>).html(""+like_count);
+              if(like_count==0)
+              {
+                $("#like_list_button_<%= p.id %>").hide();
+                $("#like_list_card_button_<%= p.id %>").hide();
+              }
+              else
+              {
+                $("#like_list_button_<%= p.id %>").show();
+                $("#like_list_card_button_<%= p.id %>").show();
+              }
+              $("#like_button_"+<%= p.id %>).removeClass("fa-heart-o").addClass("fa-heart");
+            }
+          });
+        }
+        else
+        {
+          --like_count
+      
+          $.ajax({
+              data: {
+                  post_id: <%= p.id %>
+              },
+              url: "/home/like_cancel_save",
+              success: function(){                
+                $("#like_count_"+<%= p.id %>).html(""+like_count);
+                $("#like_count_card_"+<%= p.id %>).html(""+like_count);
+                if(like_count==0)
+                {
+                  $("#like_list_button_<%= p.id %>").hide();
+                  $("#like_list_card_button_<%= p.id %>").hide();
+                }
+                else
+                {
+                  $("#like_list_button_<%= p.id %>").show();
+                  $("#like_list_card_button_<%= p.id %>").show();
+                }
+                $("#like_button_"+<%= p.id %>).removeClass("fa-heart").addClass("fa-heart-o");
+              }
+          });
+        }
+      }
+    );
+    $("#like_list_button_"+<%= p.id %>).click(function(){
+      $.ajax({
+        url: "/home/like_read/"+<%= p.id %>,
+        success:function(json){
+          var json_data = $.parseJSON(json);
+          var i;
+          $('#likelist_modal_name').html(''); 
+          for(i=0;i<json_data.length;i++)
+          {
+            if(json_data[i].image.url ==null)
+              $('#likelist_modal_name').append('<div class="row removing"><div class="col-lg-12">'+'<a href="/home/profile/'+json_data[i].user_hash+'"'+'style="color:black">'+'<img src="<%=image_url('profile_default.jpg')%>" class="img-circle">&nbsp;'+json_data[i].name+'</a></div></div><br>');
+            else
+              $('#likelist_modal_name').append('<div class="row removing"><div class="col-lg-12">'+'<a href="/home/profile/'+json_data[i].user_hash+'"'+'style="color:black">'+'<img src="'+json_data[i].image.url+'" class="img-circle">&nbsp;'+json_data[i].name+'</a></div></div><br>');
+          }        
+        }
+      });      
+    });
+    $("#like_list_card_button_"+<%= p.id %>).click(function(){
+      $.ajax({
+        url: "/home/like_read/"+<%= p.id %>,
+        success:function(json){
+          var json_data = $.parseJSON(json);
+          var i;
+          $('#likelist_modal_name').html(''); 
+          for(i=0;i<json_data.length;i++)
+          {
+            if(json_data[i].image.url ==null)
+              $('#likelist_modal_name').append('<div class="row removing"><div class="col-lg-12">'+'<a href="/home/profile/'+json_data[i].user_hash+'"'+'style="color:black">'+'<img src="<%=image_url('profile_default.jpg')%>" class="img-circle">&nbsp;'+json_data[i].name+'</a></div></div><br>');
+            else
+              $('#likelist_modal_name').append('<div class="row removing"><div class="col-lg-12">'+'<a href="/home/profile/'+json_data[i].user_hash+'"'+'style="color:black">'+'<img src="'+json_data[i].image.url+'" class="img-circle">&nbsp;'+json_data[i].name+'</a></div></div><br>');
+          }        
+        }
+      });      
+    });
+  <% end %>
+
+})  
+</script>
+
+<!-- ajax for following -->
+<script type="text/javascript">
+$(document).ready(function(){
+  <% @total_result.each do |total|%>
+    <% unless current_user.following?(User.where(:id=>total.user_id).take) %>
+      $('#feed_follow_<%=total.id%>').show();
+      $('#feed_unfollow_<%=total.id%>').hide();
+    <% else %>
+      $('#feed_follow_<%=total.id%>').hide();
+      $('#feed_unfollow_<%=total.id%>').show();
+    <% end %>
+    $('#feed_follow_<%=total.id%>').click(function(){
+      $.ajax({
+        url: "/home/follow_user/<%=total.user.id%>",
+        success:function(){
+          alert('hi');
+          $('#feed_follow_<%=total.id%>').hide();
+          $('#feed_unfollow_<%=total.id%>').show();
+        }
+      });
+    });
+    $('#feed_unfollow_<%=total.id%>').click(function(){
+      $.ajax({
+        url: "/home/unfollow_user/<%=total.user.id%>",
+        success:function(){
+          alert('hi');
+          $('#feed_follow_<%=total.id%>').show();
+          $('#feed_unfollow_<%=total.id%>').hide();
+        }
+      });
+    });
+  <% end %>
+})
+</script>
+<!-- ajax following end -->
